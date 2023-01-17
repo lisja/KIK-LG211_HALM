@@ -4,3 +4,5 @@ this is a README
 #Hello guys
 
 What's up! Best regards, Alex
+
++ some added info from Harri for changes
