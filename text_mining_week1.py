@@ -8,5 +8,5 @@ html = request.urlopen(url).read().decode('utf8')
 
 raw = BeautifulSoup(html, 'html.parser').get_text()
 tokens = word_tokenize(raw)
-# print(tokens)
+print(tokens)
 
