@@ -6,3 +6,5 @@ this is a README
 What's up! Best regards, Alex
 
 + some added info from Harri for changes
+
+Testing testing, is this finally working? -L
