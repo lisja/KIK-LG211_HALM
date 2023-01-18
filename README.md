@@ -1,10 +1,5 @@
 # KIK-LG211_HALM
 
-this is a README
-#Hello guys
+This is our group project for the course Building NLP Applications (2023)!
 
-What's up! Best regards, Alex
-
-+ some added info from Harri for changes
-
-Testing testing, is this finally working? -L
+We will update this GitHub repository as the course progresses.
