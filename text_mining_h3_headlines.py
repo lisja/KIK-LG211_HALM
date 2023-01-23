@@ -12,8 +12,9 @@ try:
     content_div = soup.find_all("h3", class_="media__title")
 
     for i in content_div:
-        contents = i.get_text("\n")
+        contents = i.get_text("\n").strip()
         print(contents)
+        print()
 
 except:
     print("error happened")
