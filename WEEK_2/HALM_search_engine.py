@@ -19,9 +19,8 @@ def rewrite_query(query): # rewrite every token in the query
 
 def search(input_query):
     print("Searching...\n\n")
-
     print("Commands 'AND', 'NOT', and 'OR' always upper case!")
-
+    
     cv = CountVectorizer(lowercase=True, binary=True)
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
@@ -29,8 +28,15 @@ def search(input_query):
     t2i = cv.vocabulary_
 
     print("Query: '" + input_query + "'")
-    print("Rewritten:", rewrite_query(input_query))
-    print("Matching:", eval(rewrite_query(input_query))) # Eval runs the string as a Python command
+
+    try:
+        print("Rewritten:", rewrite_query(input_query))
+        print("Matching:", eval(rewrite_query(input_query))) # Eval runs the string as a Python command
+        print()
+    except KeyError:
+        print("Query not found in the documents.")
+    except SyntaxError:
+        print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
     print()
 
 def interface():
