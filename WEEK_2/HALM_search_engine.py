@@ -66,7 +66,7 @@ def readandcut(file_path):
     return cuttext
 
 
-file_path = "enwiki-20181001-corpus.100-articles.txt"
+file_path = "WEEK_2/enwiki-20181001-corpus.100-articles.txt"
 cuttext = readandcut(file_path)
 
 print(cuttext[0])
