@@ -21,7 +21,7 @@ def search(input_query):
     print("Searching...\n\n")
     print("Commands 'AND', 'NOT', and 'OR' always upper case!")
     
-    cv = CountVectorizer(lowercase=True, binary=True)
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9]+\b')
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
