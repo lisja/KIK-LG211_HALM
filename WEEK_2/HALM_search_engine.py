@@ -1,5 +1,5 @@
 from sklearn.feature_extraction.text import CountVectorizer
-
+#task 5 done 
 import re
 
 def readandcut(file_path):
