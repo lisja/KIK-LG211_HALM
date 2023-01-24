@@ -62,8 +62,7 @@ def readandcut(file_path):
     text = str(text)
 
     
-    cuttext = re.split(r"<", text)
-    cuttext.pop(0)
+    cuttext = re.split(r"</article>", text)
     return cuttext
 
 
