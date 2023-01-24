@@ -63,7 +63,11 @@ def search(input_query):
 
     try:
         print("Rewritten:", rewrite_query(input_query))
-        print("Matching:", eval(rewrite_query(input_query))) # Eval runs the string as a Python command
+        print("Matching:", eval(rewrite_query(input_query)))
+        hits_matrix = eval(rewrite_query(input_query))
+        hits_list = list(hits_matrix.nonzero()[1])
+        for i, doc_idx in enumerate(hits_list):
+            print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # Eval runs the string as a Python command
         print()
     except KeyError:
         print("Query not found in the documents.")
