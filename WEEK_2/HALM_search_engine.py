@@ -1,15 +1,47 @@
 from sklearn.feature_extraction.text import CountVectorizer
 
+import re
+
+def readandcut(file_path):
+    with open(file_path, "r") as file:
+        text = file.read()
+
+    text = str(text)
+
+    cuttext = text.split("</article>")
+    cuttext = cuttext[:-1]
+    return text, cuttext
+
+file_path = "WEEK_2/enwiki-20181001-corpus.100-articles.txt"
+text, documents = readandcut(file_path)
+#these basically do the same thing that sklearn...dont ask me why I added it, but maybe will be
+#useful later, so lets keep it...
+"""def word_set(article):
+    article = article.lower()
+    article = re.sub(r"[^a-z\s]", "", article)
+    words = article.split()
+    return set(words)
+
+minisets = [word_set(i) for i in cuttext]
+mainset = word_set(text)
+vectors = []
+for article_set in minisets:
+    vector = [1 if word in article_set else 0 for word in mainset]
+    vectors.append(vector)"""
+cv = CountVectorizer(lowercase=True, binary=True)
+sparse_matrix = cv.fit_transform(documents)
+print(sparse_matrix) 
+
 d = {"AND": "&",
      "OR": "|",
      "NOT": "1 -",
      "(": "(",
      ")": ")"}
 
-documents = ["This is a silly example",
+"""documents = ["This is a silly example",
              "A better example",
              "Nothing to see here",
-             "This is a great and long example"]
+             "This is a great and long example"]"""
 
 def rewrite_token(t):
     return d.get(t, 'td_matrix[t2i["{:s}"]]'.format(t)) # Can you figure out what happens here?
@@ -52,35 +84,10 @@ def interface():
         else:
             search(input_query)
 
-import re
 
-def readandcut(file_path):
-    with open(file_path, "r") as file:
-        text = file.read()
 
-    text = str(text)
 
-    cuttext = text.split("</article>")
-    cuttext = cuttext[:-1]
-    return text, cuttext
 
-file_path = "WEEK_2/enwiki-20181001-corpus.100-articles.txt"
-text, cuttext = readandcut(file_path)
-
-def word_set(article):
-    article = article.lower()
-    article = re.sub(r"[^a-z\s]", "", article)
-    words = article.split()
-    return set(words)
-
-minisets = [word_set(i) for i in cuttext]
-mainset = word_set(text)
-vectors = []
-for article_set in minisets:
-    vector = [1 if word in article_set else 0 for word in mainset]
-    vectors.append(vector)
-print(vectors[1])
-            
 def main():
     interface()
 
