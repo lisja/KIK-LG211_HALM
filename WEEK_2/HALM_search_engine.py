@@ -1,5 +1,4 @@
 from sklearn.feature_extraction.text import CountVectorizer
-#task 5 done 
 import re
 
 def readandcut(file_path):
@@ -12,7 +11,7 @@ def readandcut(file_path):
     cuttext = cuttext[:-1]
     return text, cuttext
 
-file_path = "WEEK_2/enwiki-20181001-corpus.100-articles.txt"
+file_path = "enwiki-20181001-corpus.100-articles.txt"
 text, documents = readandcut(file_path)
 #these basically do the same thing that sklearn...dont ask me why I added it, but maybe will be
 #useful later, so lets keep it...
@@ -44,12 +43,12 @@ d = {"AND": "&",
              "This is a great and long example"]"""
 
 def rewrite_token(t):
-    return d.get(t, 'td_matrix[t2i["{:s}"]]'.format(t)) # Can you figure out what happens here?
+    return d.get(t, 'td_matrix[t2i["{:s}"]]'.format(t)) # rewrites tokens
 
 def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
 
-def search(input_query):
+def search(input_query): # search the query
     print("Searching...\n\n")
     print("Commands 'AND', 'NOT', and 'OR' always upper case!")
     
