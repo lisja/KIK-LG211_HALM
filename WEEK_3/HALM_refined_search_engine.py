@@ -104,7 +104,7 @@ def search_bool(input_query): # search the boolean query
 
 def search_tfv(input_query):
     
-    gv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2")
+    gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
     g_matrix = gv.fit_transform(documents).T.tocsr()
 
     # Vectorize query string
