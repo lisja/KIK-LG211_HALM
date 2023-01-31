@@ -1,5 +1,26 @@
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 import re
+
+def welcome():
+
+    welcome_message = "Welcome to HALM search engine!"
+
+    print()
+    print("*"*len(welcome_message))
+    print(welcome_message)
+    print("*"*len(welcome_message))
+    print()
+
+def choose_bool_or_tfv():
+
+    answer = ""
+
+    while True:
+        answer = input("Choose 'boolean' or 'tfv' search: ")
+        if answer == "boolean" or answer == "tfv":
+            print()
+            return answer
 
 def linesplitter_and_cleaner(document):
 
@@ -31,7 +52,7 @@ def rewrite_token(t):
 def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
 
-def search(input_query): # search the query
+def search_bool(input_query): # search the boolean query
  
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
     sparse_matrix = cv.fit_transform(documents)
@@ -69,15 +90,11 @@ def search(input_query): # search the query
         print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
     print()
 
-def interface():
+def search_tfv(input_query):
+    tfv = TfidfVectorizer(lowercase=True, sublinear_tf=False, use_idf=False, norm=None)
+    tf_matrix1 = tfv.fit_transform(documents).T.todense()
 
-    welcome_message = "Welcome to HALM search engine!"
-
-    print()
-    print("*"*len(welcome_message))
-    print(welcome_message)
-    print("*"*len(welcome_message))
-    print()
+def interface(bool_or_tfv):
     
     while True:
     
@@ -95,12 +112,15 @@ def interface():
             print()
             
             break
-        else:
-            search(input_query)
+        elif bool_or_tfv == "boolean":
+            search_bool(input_query)
+        elif bool_or_tfv == "tfv":
+            search_tfv(input_query)
 
 def main():
-    
-    interface()
+    welcome()
+    bool_or_tfv = choose_bool_or_tfv()
+    interface(bool_or_tfv)
 
 file_path = "enwiki-20181001-corpus.100-articles.txt"
 text, documents = readandcut(file_path)
