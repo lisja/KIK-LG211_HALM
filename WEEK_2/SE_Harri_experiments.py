@@ -6,28 +6,25 @@ def readandcut(file_path):
     with open(file_path, "r") as file:
         text = file.read()
 
+    # print(text[:200])
     text = str(text)
 
-    cuttext = text.split("</article>")
-    cuttext = cuttext[:-1]
+    text = re.sub("</article>", "</article>/n/n", text)
+
+    cuttext = text.split("/n/n")
+    # cuttext = cuttext[:-1]
     return text, cuttext
 
 file_path = "enwiki-20181001-corpus.100-articles.txt"
 text, documents = readandcut(file_path)
-#these basically do the same thing that sklearn...dont ask me why I added it, but maybe will be
-#useful later, so lets keep it...
-"""def word_set(article):
-    article = article.lower()
-    article = re.sub(r"[^a-z\s]", "", article)
-    words = article.split()
-    return set(words)
+print("SMOTHING", text[:200])
+# print("SMOTHING")
+# print(len(documents))
+# print()
+# print(documents[99])
+# print(len(cuttext))
 
-minisets = [word_set(i) for i in cuttext]
-mainset = word_set(text)
-vectors = []
-for article_set in minisets:
-    vector = [1 if word in article_set else 0 for word in mainset]
-    vectors.append(vector)"""
+
 cv = CountVectorizer(lowercase=True, binary=True)
 sparse_matrix = cv.fit_transform(documents)
 print(sparse_matrix) 
