@@ -32,8 +32,8 @@ def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
 
 def search(input_query): # search the query
- 
-    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
+ #token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b',
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b', ngram_range=(1, 2))
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
