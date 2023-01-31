@@ -103,21 +103,33 @@ def search_bool(input_query): # search the boolean query
     print()
 
 def search_tfv(input_query):
+    #if input is in quotes, use bigrams only (c. Multi-word phrases)
+    try:
+        if input_query.startswith('"') and input_query.endswith('"'):
+            input_query = input_query[1:-1] # remove the quotes
+            try:
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(2, 2), sublinear_tf=True, use_idf=True, norm="l2")
+            except IndexError:
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
+        else:
+            gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
     
-    gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
-    g_matrix = gv.fit_transform(documents).T.tocsr()
+        g_matrix = gv.fit_transform(documents).T.tocsr()
 
     # Vectorize query string
-    query_vec = gv.transform([ input_query ]).tocsc()
+        query_vec = gv.transform([ input_query ]).tocsc()
 
     # Cosine similarity
-    hits = np.dot(query_vec, g_matrix)
+        hits = np.dot(query_vec, g_matrix)
 
     # Rank hits
-    ranked_scores_and_doc_ids = \
-        sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]),
-               reverse=True)
-
+        ranked_scores_and_doc_ids = \
+            sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]),
+                reverse=True)
+    except IndexError:
+        print("Query not found in the documents.")
+        print()
+        return
     # Output result
     try:
 
