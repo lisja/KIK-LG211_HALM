@@ -4,7 +4,40 @@ import numpy as np
 import re
 import nltk
 
+def print_output(hits_list, bool_or_tfv):
+        print("\nThere are/is ", len(hits_list), " hit(s).\n")
+        print("-"*30)
+        for i, doc_idx in enumerate(hits_list):
+
+                #tfv gives tuples, so to make the code work, it has to be split into score and the index
+                if type(doc_idx) == tuple:
+                        score = doc_idx[0]
+                        doc_idx = doc_idx[1]
+
+                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+
+                article_name = doc_lines[0]
+                first_line = doc_lines[1]
+
+                #Deletes the article name tag from the article_name
+                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
+
+                if bool_or_tfv == "tfv":
+                        print("Article: {:s}\nScore: {:f}\nContent: {:s}...".format(article_name, score, first_line[:100]))
+                elif bool_or_tfv == "boolean":
+                        print("Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
+                print("-"*30)
+
+                #Ask if print 10 more or stop printing
+                if i % 10 == 0 and i > 1:
+                        stop_or_continue = input("\nWould you like more results (Y / N)? ")
+                        if stop_or_continue == "N" or stop_or_continue == "n":
+                                break
+                        
+                        
+                        
 def goodbye():
+        
         quit_message = "Quitting program. Thank you for using the HALM Search Engine!"
         
         print()
@@ -29,9 +62,11 @@ def choose_bool_or_tfv():
 
     while True:
         answer = input("Choose 'boolean' or 'tfv' search: ")
-        if answer == "boolean" or answer == "tfv":
-            print()
-            return answer
+        if answer == "boolean":
+                print("Use only lower-case unless using the AND, OR and NOT commands in 'boolean' mode")
+                return answer
+        elif answer == "tfv":
+                return answer
 
 def linesplitter_and_cleaner(document):
 
@@ -64,8 +99,8 @@ def rewrite_token(t):
 def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
 
-def search_bool(input_query): # search the boolean query
- 
+def search_bool(input_query, bool_or_tfv): # search the boolean query
+
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
@@ -77,22 +112,7 @@ def search_bool(input_query): # search the boolean query
         hits_matrix = eval(rewrite_query(input_query))
         hits_list = list(hits_matrix.nonzero()[1])
 
-        print("\nThere are/is ", len(hits_list), " hit(s).\n")
-        print("-"*30, end="\n\n\n")
-
-        
-        for i, doc_idx in enumerate(hits_list):
-            
-            doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-
-            article_name = doc_lines[0]
-            first_line = doc_lines[1]
-
-            #Delete the article name tag from the article_name
-            article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-            
-            print("Article: {:s}\n\nContent: {:s}\n\n".format(article_name, first_line))
-            print("-"*30)
+        print_output(hits_list, bool_or_tfv)
             
             
         print()
@@ -102,7 +122,7 @@ def search_bool(input_query): # search the boolean query
         print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
     print()
 
-def search_tfv(input_query):
+def search_tfv(input_query, bool_or_tfv):
     #if input is in quotes, use bigrams only (c. Multi-word phrases)
     try:
         if input_query.startswith('"') and input_query.endswith('"'):
@@ -133,24 +153,12 @@ def search_tfv(input_query):
     # Output result
     try:
 
-        print("Your query '{:s}' matches the following documents:".format(input_query))
-        print()
+        print_output(ranked_scores_and_doc_ids, bool_or_tfv)
         
-        for i, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids):
-                
-            doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+        #print("Your query '{:s}' matches the following documents:".format(input_query))
+        #print()
+        
 
-            article_name = doc_lines[0]
-            first_line = doc_lines[1]
-
-            #Delete the article name tag from the article_name
-            article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-
-            print("Article: {:s}\nScore: {:f}\n".format(article_name, score))
-            #print("Article: {:s}\n\nContent: {:s}\n\n".format(article_name, first_line))
-            print("-"*30)
-            #print("Doc #{:d} (score: {:.4f}): {:s}".format(i, score, documents[doc_idx]))
-            #print("Doc #{:d} (score: {:.4f})".format(i, score))
     except KeyError:
         print("Query not found in the documents.")
     except SyntaxError:
@@ -161,17 +169,18 @@ def search_tfv(input_query):
 def interface(bool_or_tfv):
     
     while True:
-    
-        print("'q' = Quit; use only lower-case unless using the AND, OR and NOT commands.")
+        print()
+        print("'q' = Quit; 'm' = Choose mode")
         input_query = input("Input your query: ")
 
         if input_query == "q":
-            
             break
+        elif input_query == "m":
+            bool_or_tfv = choose_bool_or_tfv()
         elif bool_or_tfv == "boolean":
-            search_bool(input_query)
+            search_bool(input_query, bool_or_tfv)
         elif bool_or_tfv == "tfv":
-            search_tfv(input_query)
+            search_tfv(input_query, bool_or_tfv)
 
 def main():
     welcome()
@@ -182,6 +191,7 @@ def main():
 file_path = "enwiki-20181001-corpus.100-articles.txt"
 text, documents = readandcut(file_path)
 
+#bool_or_tfv = ""
 
 d = {"AND": "&",
      "OR": "|",
