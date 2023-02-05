@@ -2,7 +2,10 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 import re
-import nltk
+from nltk.stem import *
+from nltk.tokenize import sent_tokenize, word_tokenize
+import operator
+import time
 
 
 ### 1 READING IN FILES AND PREPARING INITIAL DATA
@@ -82,13 +85,19 @@ def interface(bool_or_tfv):
         print()
         print("'q' = Quit; 'm' = Choose mode")
         input_query = input("Input your query: ")
+        additional_tokens = input_query
+        additional_tokens = find_related_tokens_from_stem(input_query)
+        print("additional_tokens from Stemmer: ", additional_tokens)
+        # pause code for 2 seconds to see added tokens by Stemmer
+        time.sleep(2)
+        print()
 
         if input_query == "q":
             break
         elif input_query == "m":
             bool_or_tfv = choose_bool_or_tfv()
         elif bool_or_tfv == "boolean":
-            search_bool(input_query, bool_or_tfv)
+            search_bool(input_query, bool_or_tfv, additional_tokens)
         elif bool_or_tfv == "tfv":
             search_tfv(input_query, bool_or_tfv)
 
@@ -98,6 +107,7 @@ def interface(bool_or_tfv):
 # what is happening - maybe search_and_print_results()
 def print_output(hits_list, bool_or_tfv):
         print("\nThere are/is ", len(hits_list), " hit(s).\n")
+        time.sleep(1)
         print("-"*30)
         for i, doc_idx in enumerate(hits_list):
 
@@ -142,7 +152,7 @@ def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
 
 # 3b Code to prepare results for the "boolean" type query
-def search_bool(input_query, bool_or_tfv): # search the boolean query
+def search_bool(input_query, bool_or_tfv, additional_tokens): # search the boolean query
 
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
     sparse_matrix = cv.fit_transform(documents)
@@ -151,8 +161,17 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
     t2i = cv.vocabulary_
 
     try:
-        hits_matrix = eval(rewrite_query(input_query))
-        hits_list = list(hits_matrix.nonzero()[1])
+        if type(additional_tokens) is list:
+            hits_list = []
+            for token in additional_tokens:
+                hits_matrix = eval(rewrite_query(token))
+                hits_list.append(list(hits_matrix.nonzero()[1]))
+            hits_list = list(set([item for items in hits_list for item in items]))
+            # print("hits_list from IF: ", hits_list)
+        else:
+            hits_matrix = eval(rewrite_query(input_query))
+            hits_list = list(hits_matrix.nonzero()[1])
+            # print("hits_list from ELSE: ", hits_list)
         print_output(hits_list, bool_or_tfv)            
         print()
 
@@ -206,11 +225,46 @@ def search_tfv(input_query, bool_or_tfv):
         print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
     print()
     
+# 3d tokenize the text from the file, 
+# create token_to_stem_dict and stem_to_tokens_dict 
+def stemming(file_path): 
+
+    stemmer = PorterStemmer()
+    # words = word_tokenize(text[:3000])
+    words = word_tokenize(text)
+
+    # loop over all tokens and save one_to_one 'token':'stem' pair in a dict
+    token_to_stem_dict = {}
+    for i in words:
+        if i.lower() not in token_to_stem_dict:
+            token_to_stem_dict[i.lower()] = stemmer.stem(i)
+    
+    # loop over 'token':'stem' pairs in dict and reverse order to 'stem': ['token1', 'token2', 'token3', etc]
+    stem_to_tokens_dict = {}    
+    for key, value in token_to_stem_dict.items():
+        if value not in stem_to_tokens_dict:
+            stem_to_tokens_dict[value] = [key]
+        else:
+            stem_to_tokens_dict[value].append(key)
+
+    # print("stem_to_tokens_dict: ", stem_to_tokens_dict)
+    return token_to_stem_dict, stem_to_tokens_dict
+
+token_to_stem_dict, stem_to_tokens_dict = stemming(file_path)
+
+# 3e find_related_tokens_from_stem – and return a list of words for search
+def find_related_tokens_from_stem(token):
+    stem = token_to_stem_dict[token]
+    list_of_words_to_look_for = stem_to_tokens_dict[stem]
+    # print(list_of_words_to_look_for)
+    return list_of_words_to_look_for
+
+
 # 4 MAIN() FUNCTION – RUNS ALL THE FUNCTIONS IN CORRECT ORDER
 def main():
     welcome()
     bool_or_tfv = choose_bool_or_tfv()
     interface(bool_or_tfv)
-    goodbye()
+    goodbye()    
 
 main()
