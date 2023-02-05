@@ -85,8 +85,9 @@ def interface(bool_or_tfv):
         print()
         print("'q' = Quit; 'm' = Choose mode")
         input_query = input("Input your query: ")
+        # following 5 lines of code added for Stemmer functionality
         additional_tokens = input_query
-        additional_tokens = find_related_tokens_from_stem(input_query)
+        additional_tokens = find_related_tokens_from_stem(input_query) # comment out this line to disable Stemmer functionality
         print("additional_tokens from Stemmer: ", additional_tokens)
         # pause code for 2 seconds to see added tokens by Stemmer
         time.sleep(2)
@@ -161,6 +162,7 @@ def search_bool(input_query, bool_or_tfv, additional_tokens): # search the boole
     t2i = cv.vocabulary_
 
     try:
+        # this IF block added for Stemmer functionality
         if type(additional_tokens) is list:
             hits_list = []
             for token in additional_tokens:
