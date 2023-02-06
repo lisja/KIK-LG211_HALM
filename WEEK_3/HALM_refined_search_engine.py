@@ -88,7 +88,10 @@ def interface(bool_or_tfv):
         # following 5 lines of code added for Stemmer functionality
         additional_tokens = input_query
         additional_tokens = find_related_tokens_from_stem(input_query) # comment out this line to disable Stemmer functionality
-        print("additional_tokens from Stemmer: ", additional_tokens)
+        if input_query == "q" or input_query == "m":
+            pass            
+        else:
+            print("Additional tokens from Stemmer: ", additional_tokens)
         # pause code for 2 seconds to see added tokens by Stemmer
         time.sleep(2)
         print()
@@ -256,11 +259,16 @@ token_to_stem_dict, stem_to_tokens_dict = stemming(file_path)
 
 # 3e find_related_tokens_from_stem – and return a list of words for search
 def find_related_tokens_from_stem(token):
-    stem = token_to_stem_dict[token]
-    list_of_words_to_look_for = stem_to_tokens_dict[stem]
+    try:
+        stem = token_to_stem_dict[token]
+        list_of_words_to_look_for = stem_to_tokens_dict[stem]
     # print(list_of_words_to_look_for)
-    return list_of_words_to_look_for
-
+        return list_of_words_to_look_for
+    except KeyError:
+        return [token]
+    except SyntaxError:
+        print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
+    print()
 
 # 4 MAIN() FUNCTION – RUNS ALL THE FUNCTIONS IN CORRECT ORDER
 def main():
