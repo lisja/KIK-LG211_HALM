@@ -88,7 +88,7 @@ def interface(bool_or_tfv):
         # following 5 lines of code added for Stemmer functionality
         additional_tokens = input_query
         additional_tokens = find_related_tokens_from_stem(input_query) # comment out this line to disable Stemmer functionality
-        if input_query == "q" or input_query == "m":
+        if input_query == "q" or input_query == "m": # do not print the print about tokens if input "q" or "m"
             pass            
         else:
             print("Additional tokens from Stemmer: ", additional_tokens)
@@ -264,7 +264,7 @@ def find_related_tokens_from_stem(token):
         list_of_words_to_look_for = stem_to_tokens_dict[stem]
     # print(list_of_words_to_look_for)
         return list_of_words_to_look_for
-    except KeyError:
+    except KeyError: # error handling if query not in text
         return [token]
     except SyntaxError:
         print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
