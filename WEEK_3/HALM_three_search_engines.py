@@ -93,7 +93,7 @@ def interface(bool_or_tfv_or_stems):
         additional_tokens = find_related_tokens_from_stem(input_query) # comment out this line to disable Stemmer functionality
        
         # pause code for 2 seconds to see added tokens by Stemmer
-        time.sleep(2)
+        #time.sleep(2)
         print()
 
         if input_query == "q":
@@ -203,10 +203,9 @@ def search_bool(input_query, bool_or_tfv): # search the query
         hits_matrix = eval(rewrite_query(input_query))
         hits_list = list(hits_matrix.nonzero()[1])
 
-        print("\nThere are/is ", len(hits_list), " hit(s).\n")
-        print("-"*30, end="\n\n\n")
+        print_output(hits_list, bool_or_tfv)
 
-        
+        """
         for i, doc_idx in enumerate(hits_list):
             
             doc_lines = linesplitter_and_cleaner(documents[doc_idx])
@@ -219,7 +218,7 @@ def search_bool(input_query, bool_or_tfv): # search the query
             
             print("Article: {:s}\n\nContent: {:s}\n\n".format(article_name, first_line))
             print("-"*30)
-            
+         """   
             
         print()
     except KeyError:
