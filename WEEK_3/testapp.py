@@ -47,7 +47,7 @@ def index():
             # search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             # print_output(hits_list, bool_or_tfv_or_stems)
             pass
-    return render_template('test.html')
+    return render_template('/Users/mike/Documents/GitHub/KIK-LG211_HALM/WEEK_3/test.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
