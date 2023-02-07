@@ -71,7 +71,7 @@ def choose_bool_or_tfv_or_stems():
     while True:
         answer = input("Choose 'boolean', 'tfv' or 'stems' search: ")
         if answer == "boolean":
-                print("Use only lower-case unless using the AND, OR and NOT commands in 'boolean' mode")
+                print("Use only lower-case unless using the AND, OR and AND NOT commands in 'boolean' mode")
                 return answer
         elif answer == "tfv":
                 print('If you want to search for bigrams write query inside quotes (" ")') 
@@ -149,7 +149,6 @@ def print_output(hits_list, bool_or_tfv_or_stems):
 # slightly modified to use only capital AND, OR, NOT as boolean operators
 d = {"AND": "&",
      "OR": "|",
-     "AND NOT": "1 -",
      "NOT": "1 -",
      "(": "(",
      ")": ")"}
