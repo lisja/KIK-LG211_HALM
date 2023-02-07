@@ -149,6 +149,7 @@ def print_output(hits_list, bool_or_tfv_or_stems):
 # slightly modified to use only capital AND, OR, NOT as boolean operators
 d = {"AND": "&",
      "OR": "|",
+     "AND NOT": "1 -",
      "NOT": "1 -",
      "(": "(",
      ")": ")"}
@@ -225,7 +226,7 @@ def search_bool(input_query, bool_or_tfv): # search the query
     except KeyError:
         print("Query not found in the documents.")
     except SyntaxError:
-        print("'AND', 'NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
+        print("'AND', 'AND NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
     print() 
             
 
