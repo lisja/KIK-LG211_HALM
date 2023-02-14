@@ -16,11 +16,11 @@ def readandcut(file_path):
 
     text = str(text)
 
-    cuttext = text.split("</article>")
+    cuttext = text.split("//%")
     cuttext = cuttext[:-1]
     return text, cuttext
 
-# 1b Splitting 100 documents into lines
+# 1b Splitting documents into lines
 def linesplitter_and_cleaner(document):
 
     #making a list of lines of the document
@@ -34,7 +34,7 @@ def linesplitter_and_cleaner(document):
     return doc_lines
 
 # 1c default file_path used
-file_path = "enwiki-20181001-corpus.100-articles.txt"
+file_path = "naruto3.txt"
 
 # 1d executing readandcut() function and saving full 
 # string into "text" and split articles into "documents"
@@ -124,17 +124,17 @@ def print_output(hits_list, bool_or_tfv_or_stems):
 
                 doc_lines = linesplitter_and_cleaner(documents[doc_idx])
                 article_name = doc_lines[0]
-                first_line = doc_lines[1]
+                first_line = '\n'.join(doc_lines[:5])
 
                 #Deletes the article name tag from the article_name
-                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
+                #article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
 
                 if bool_or_tfv_or_stems == "tfv":
-                        print("Article: {:s}\nScore: {:f}\nContent: {:s}...".format(article_name, score, first_line[:100]))
+                        print("Episode: {:s}\nScore: {:f}\nContent: {:s}...".format(article_name, score, first_line[:100]))
                 elif bool_or_tfv_or_stems == "boolean":
-                        print("Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
+                        print("Episode: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
                 elif bool_or_tfv_or_stems == "stems":
-                        print("Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
+                        print("Episode: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
                 print("-"*30)
 
                 #Ask if print 10 more or stop printing
