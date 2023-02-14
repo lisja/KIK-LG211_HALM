@@ -96,7 +96,7 @@ def index():
             additional_tokens = find_related_tokens_from_stem(input_query)
             hits_list = search_stems(input_query, documents, additional_tokens)
             print_output(hits_list, bool_or_tfv_or_stems)
-    return render_template('index.html')
+    return render_template('index.html', hits_list=hits_list)
 
 
 if __name__ == '__main__':
