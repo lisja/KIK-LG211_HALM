@@ -24,6 +24,8 @@ Relevance ranking and refined search: a more advanced search engine with 3 diffe
 
 Search engine in a web UI
 
+**Week 5:**
 
+Text mining/plotting
 
-We will update this GitHub repository as the course progresses.
+(We will update this GitHub repository as the course progresses.)

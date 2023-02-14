@@ -48,6 +48,9 @@
     </form>
     {% if results %}
     <h2>Results</h2>
+    <h3>Number of hits:</h3>
+    <p>{{ amount }}</p>
+
     <table>
       {% for result in results %}
       <tr>

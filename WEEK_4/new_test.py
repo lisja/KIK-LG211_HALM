@@ -38,26 +38,20 @@ def print_output(hits_list, bool_or_tfv_or_stems):
         pass
         """
         print("\nThere are/is ", len(hits_list), " hit(s).\n")
-
         print("-"*30)
         for i, doc_idx in enumerate(hits_list):
-
                 #tfv gives tuples, so to make the code work, it has to be split into score and the index
                 if type(doc_idx) == tuple:
                         score = doc_idx[0]
                         doc_idx = doc_idx[1]
-
                 doc_lines = linesplitter_and_cleaner(documents[doc_idx])
                 article_name = doc_lines[0]
                 first_line = doc_lines[1]
-
                 #Deletes the article name tag from the article_name
                 article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-
                 if bool_or_tfv_or_stems == "tfv":
                     print("Article: {:s}\nScore: {:f}\nContent: {:s}...".format(article_name, score, first_line[:100]))
                 elif bool_or_tfv_or_stems == "boolean":
-
                     boolean_return = "Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100])
                     print(boolean_return)
                 elif bool_or_tfv_or_stems == "stems":
@@ -126,7 +120,7 @@ def rewrite_query(query): # rewrite every token in the query
 def index():
     file_path = "enwiki-20181001-corpus.100-articles.txt"
     text, documents = readandcut(file_path)
-    matches=[]
+    matches = []
     if request.method == 'POST':
         input_query = request.form.get('input_query')
         bool_or_tfv_or_stems = request.form.get('mode')
@@ -143,9 +137,8 @@ def index():
             # matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             # print_output(hits_list, bool_or_tfv_or_stems)
             pass
-    print(f"######## LENGTH {len(matches)}")
-    return render_template('index.html', results=matches)
+    amount = len(matches) # the amount of articles found
+    return render_template('index.html', results=matches, amount=amount)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
