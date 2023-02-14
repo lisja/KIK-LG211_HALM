@@ -46,5 +46,16 @@
       <br><br>
       <input type="submit" value="Search">
     </form>
+    {% if results %}
+    <h2>Results</h2>
+    <table>
+      {% for result in results %}
+      <tr>
+          <td>{{ result["article_name"] }}</td>
+          <td>{{ result["article_content"] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
   </body>
 </html>
