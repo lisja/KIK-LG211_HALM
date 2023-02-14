@@ -102,10 +102,14 @@ def interface(bool_or_tfv_or_stems):
             bool_or_tfv_or_stems = choose_bool_or_tfv_or_stems()
         elif bool_or_tfv_or_stems == "boolean":
             search_bool(input_query, bool_or_tfv_or_stems)
+            show_matches(input_query, text)
+            
         elif bool_or_tfv_or_stems == "tfv":
             search_tfv(input_query, bool_or_tfv_or_stems)
+            show_matches(input_query, text)
         elif bool_or_tfv_or_stems == "stems":
             search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
+            show_matches(input_query, text)
 
 # 2e Search in articles and outputs results
 # perhaps this function can be split into 2 - logic and representational  –
@@ -158,6 +162,28 @@ def rewrite_token(t):
 
 def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
+
+def show_matches(input_query, text):
+    listofmatches = []
+    lines = text.split('\n')
+    for i, line in enumerate(lines):
+        if line.startswith('//%'):
+            listofmatches.append(line)
+        if input_query in line:
+            start = max(0, i-1)
+            end = min(len(lines), i+1)
+            context = lines[start:end]
+            listofmatches.append(' '.join(context))
+            i = 0
+            while i < len(listofmatches) - 1:
+                if listofmatches[i].startswith('//%') and listofmatches[i+1].startswith('//%'):
+                    del listofmatches[i]
+                else:
+                    i += 1
+    print('\n'.join(listofmatches))
+            
+
+
 
 # 3b Code to prepare results for the "stems" type query
 def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
