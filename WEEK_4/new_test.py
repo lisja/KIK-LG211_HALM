@@ -73,7 +73,7 @@ def search_bool(input_query, bool_or_tfv): # search the query
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_
-
+    
     try:
         
         hits_matrix = eval(rewrite_query(input_query))
@@ -98,11 +98,130 @@ def search_bool(input_query, bool_or_tfv): # search the query
 
         print()
     except KeyError:
-        print("Query not found in the documents.")
+        return "Query not found in the documents."
     except SyntaxError:
-        print("'AND', 'AND NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'")
+        return "AND', 'AND NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'"
     print()
-    return hits
+
+    #In case of an error, returns error:
+    try:
+        return hits
+    except:
+        hits=[]
+        article_name = "Error"
+        article_content = "Error"
+        hits.append({"article_name":article_name, "article_content":article_content})
+        return hits
+
+def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
+
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
+    sparse_matrix = cv.fit_transform(documents)
+    dense_matrix = sparse_matrix.todense()
+    td_matrix = dense_matrix.T
+    t2i = cv.vocabulary_
+    hits=[]
+
+    try:
+        # this IF block added for Stemmer functionality
+        if type(additional_tokens) is list:
+            hits_list = []
+            for token in additional_tokens:
+                hits_matrix = eval(rewrite_query(token))
+                hits_list.append(list(hits_matrix.nonzero()[1]))
+            hits_list = list(set([item for items in hits_list for item in items]))
+            # print("hits_list from IF: ", hits_list)
+        else:
+            hits_matrix = eval(rewrite_query(input_query))
+            hits_list = list(hits_matrix.nonzero()[1])
+            # print("hits_list from ELSE: ", hits_list)
+
+    
+        #print("Additional tokens from Stemmer: ", additional_tokens)
+        for i, doc_idx in enumerate(hits_list):
+
+                #tfv gives tuples, so to make the code work, it has to be split into score and the index
+                if type(doc_idx) == tuple:
+                        score = doc_idx[0]
+                        doc_idx = doc_idx[1]
+
+                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+                article_name = doc_lines[0]
+                first_line = doc_lines[1]
+
+                #Deletes the article name tag from the article_name
+                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
+                hits.append({"article_name":article_name, "article_content":first_line[:100]})          
+
+
+        return hits
+    except:
+        hits=[]
+        article_name = "Error"
+        article_content = "Error"
+        hits.append({"article_name":article_name, "article_content":article_content})
+        return hits
+    
+
+def search_tfv(input_query, bool_or_tfv_or_stems):
+    #if input is in quotes, use bigrams only (c. Multi-word phrases)
+    try:
+        if input_query.startswith('"') and input_query.endswith('"'):
+            input_query = input_query[1:-1] # remove the quotes
+            try:
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(2, 2), sublinear_tf=True, use_idf=True, norm="l2")
+            except IndexError:
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
+        else:
+            gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
+    
+        g_matrix = gv.fit_transform(documents).T.tocsr()
+
+    # Vectorize query string
+        query_vec = gv.transform([ input_query ]).tocsc()
+
+    # Cosine similarity
+        hits = np.dot(query_vec, g_matrix)
+
+    # Rank hits
+        ranked_scores_and_doc_ids = \
+            sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]),
+                reverse=True)
+
+        hits=[]
+        
+        for i, doc_idx in enumerate(ranked_scores_and_doc_ids):
+
+                #tfv gives tuples, so to make the code work, it has to be split into score and the index
+                if type(doc_idx) == tuple:
+                        score = doc_idx[0]
+                        doc_idx = doc_idx[1]
+
+                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+                article_name = doc_lines[0]
+                first_line = doc_lines[1]
+                rating = "Rating: " + str(score)
+
+                #Deletes the article name tag from the article_name
+                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
+                hits.append({"article_name":article_name, "article_score":rating, "article_content":first_line[:100]})
+                
+        try:
+            return hits
+        except:
+            hits=[]
+            article_name = "Error"
+            article_content = "Error"
+            hits.append({"article_name":article_name, "article_content":article_content})
+            return hits
+    except:
+        hits=[]
+        article_name = "Error"
+        article_content = "Error"
+        hits.append({"article_name":article_name, "article_content":article_content})
+        return hits
+
+
 
 d = {"AND": "&",
      "OR": "|",
@@ -115,6 +234,41 @@ def rewrite_token(t):
 
 def rewrite_query(query): # rewrite every token in the query
     return " ".join(rewrite_token(t) for t in query.split())
+
+def stemming(file_path): 
+
+    stemmer = PorterStemmer()
+    # words = word_tokenize(text[:3000])
+    words = word_tokenize(text)
+
+    # loop over all tokens and save one_to_one 'token':'stem' pair in a dict
+    token_to_stem_dict = {}
+    for i in words:
+        if i.lower() not in token_to_stem_dict:
+            token_to_stem_dict[i.lower()] = stemmer.stem(i)
+    
+    # loop over 'token':'stem' pairs in dict and reverse order to 'stem': ['token1', 'token2', 'token3', etc]
+    stem_to_tokens_dict = {}    
+    for key, value in token_to_stem_dict.items():
+        if value not in stem_to_tokens_dict:
+            stem_to_tokens_dict[value] = [key]
+        else:
+            stem_to_tokens_dict[value].append(key)
+
+    # print("stem_to_tokens_dict: ", stem_to_tokens_dict)
+    return token_to_stem_dict, stem_to_tokens_dict
+
+token_to_stem_dict, stem_to_tokens_dict = stemming(file_path)
+
+# 3e find_related_tokens_from_stem – and return a list of words for search
+def find_related_tokens_from_stem(token):
+    try:
+        stem = token_to_stem_dict[token]
+        list_of_words_to_look_for = stem_to_tokens_dict[stem]
+    # print(list_of_words_to_look_for)
+        return list_of_words_to_look_for
+    except KeyError: # error handling if query not in text
+        return [token]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -129,14 +283,15 @@ def index():
             #print_output(hits_list, bool_or_tfv_or_stems)
             
         elif bool_or_tfv_or_stems == "tfv":
-            # matches = search_tfv(input_query, bool_or_tfv_or_stems)
+             matches = search_tfv(input_query, bool_or_tfv_or_stems)
             # print_output(hits_list, bool_or_tfv_or_stems)
-            pass
+            
         elif bool_or_tfv_or_stems == "stems":
-            # additional_tokens = find_related_tokens_from_stem(input_query)
-            # matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
+             additional_tokens = find_related_tokens_from_stem(input_query)
+             #matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
+             matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             # print_output(hits_list, bool_or_tfv_or_stems)
-            pass
+            
     amount = len(matches) # the amount of articles found
     return render_template('index.html', results=matches, amount=amount)
 
