@@ -89,11 +89,18 @@ def search_bool(input_query, bool_or_tfv): # search the query
 
                 doc_lines = linesplitter_and_cleaner(documents[doc_idx])
                 article_name = doc_lines[0]
-                first_line = doc_lines[1]
+                f1rst_line = []
+                for i in range(1, len(doc_lines)):
+                    if input_query in doc_lines[i]:
+                        f1rst_line.append(doc_lines[i-1])
+                        f1rst_line.append(doc_lines[i])
+
+                first_line = '\n'.join(f1rst_line)
+
 
                 #Deletes the article name tag from the article_name
                 article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-                hits.append({"article_name":article_name, "article_content":first_line[:100]})
+                hits.append({"article_name":article_name, "article_content":first_line})
 
 
         print()
@@ -272,7 +279,7 @@ def find_related_tokens_from_stem(token):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    file_path = "enwiki-20181001-corpus.100-articles.txt"
+    file_path = "naruto3.txt"
     text, documents = readandcut(file_path)
     matches = []
     if request.method == 'POST':
