@@ -95,23 +95,16 @@ def search_bool(input_query, bool_or_tfv): # search the query
                 article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
                 hits.append({"article_name":article_name, "article_content":first_line[:100]})
 
-
-        print()
-    except KeyError:
-        return "Query not found in the documents."
-    except SyntaxError:
-        return "AND', 'AND NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'"
-    print()
+        return hits, len(hits)
 
     #In case of an error, returns error:
-    try:
-        return hits
     except:
         hits=[]
+        amount = 0
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
 
 def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
 
@@ -153,14 +146,14 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
                 article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
                 hits.append({"article_name":article_name, "article_content":first_line[:100]})          
 
-
-        return hits
+        return hits, len(hits)
     except:
         hits=[]
+        amount=0
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
     
 
 def search_tfv(input_query, bool_or_tfv_or_stems):
@@ -205,21 +198,14 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
                 #Deletes the article name tag from the article_name
                 article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
                 hits.append({"article_name":article_name, "article_score":rating, "article_content":first_line[:100]})
-                
-        try:
-            return hits
-        except:
-            hits=[]
-            article_name = "Error"
-            article_content = "Error"
-            hits.append({"article_name":article_name, "article_content":article_content})
-            return hits
+        return hits, len(hits)
     except:
         hits=[]
+        amount = 0
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
 
 
 
@@ -275,24 +261,24 @@ def index():
     file_path = "enwiki-20181001-corpus.100-articles.txt"
     text, documents = readandcut(file_path)
     matches = []
+    amount = 0
     if request.method == 'POST':
         input_query = request.form.get('input_query')
         bool_or_tfv_or_stems = request.form.get('mode')
         if bool_or_tfv_or_stems == "boolean":
-            matches = search_bool(input_query, bool_or_tfv_or_stems)
+            matches, amount = search_bool(input_query, bool_or_tfv_or_stems)
             #print_output(hits_list, bool_or_tfv_or_stems)
             
         elif bool_or_tfv_or_stems == "tfv":
-             matches = search_tfv(input_query, bool_or_tfv_or_stems)
+             matches, amount = search_tfv(input_query, bool_or_tfv_or_stems)
             # print_output(hits_list, bool_or_tfv_or_stems)
             
         elif bool_or_tfv_or_stems == "stems":
              additional_tokens = find_related_tokens_from_stem(input_query)
              #matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
-             matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
+             matches, amount = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             # print_output(hits_list, bool_or_tfv_or_stems)
             
-    amount = len(matches) # the amount of articles found
     return render_template('index.html', results=matches, amount=amount)
 
 if __name__ == '__main__':
