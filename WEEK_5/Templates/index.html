@@ -1,50 +1,56 @@
+
+<!DOCTYPE html>
 <html>
   <head>
     <title>Document Search</title>
     <style>
+      @import url('https://fonts.cdnfonts.com/css/ninja-naruto');
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        font-family: 'Ninja Naruto', sans-serif;
+        background-color: #f07910;
       }
       h1 {
         text-align: center;
-        color: #d1bc99;
+        color: #efdc92;
+        text-shadow: 2px 2px #f07d0b;
+        font-size: 4rem;
       }
       form {
         margin: auto;
         width: 50%;
         padding: 50px;
-        background-color: white;
+        background-color: #f8d33e;
         box-shadow: 0px 0px 10px 0px #888;
+        border-radius: 5px;
       }
       input[type=text], input[type=submit] {
         width: 100%;
         padding: 12px 20px;
         margin: 8px 0;
         box-sizing: border-box;
-        border: 2px solid #ccc;
-        border-radius: 4px;
+        border: none;
+        border-radius: 5px;
         font-size: 16px;
       }
       input[type=submit] {
-        background-color: #ff9d00;
+        background-color: #c0392b;
         color: white;
-        border: none;
         cursor: pointer;
       }
       .results {
         margin: auto;
         width: 50%;
         padding: 20px;
-        background-color: white;
+        background-color: #f1c40f;
         box-shadow: 0px 0px 10px 0px #888;
         text-align: center;
+        border-radius: 5px;
       }
       .result {
         margin: 10px;
         padding: 10px;
-        border: 2px solid #ccc;
-        border-radius: 4px;
+        border: 2px solid #e74c3c;
+        border-radius: 5px;
       }
       .result h3 {
         margin-top: 0;
@@ -53,9 +59,20 @@
       .result p {
         margin-bottom: 0;
       }
+      .logo {
+        display: block;
+        margin: 0 auto;
+        width: 300px;
+        height: 150px;
+        background-image: url('naruto-logo.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
     </style>
   </head>
   <body>
+    <div class="logo"></div>
     <h1>Document Search</h1>
     <form action="/" method="post">
       <p>Enter your query:</p>
