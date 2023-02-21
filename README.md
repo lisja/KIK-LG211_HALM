@@ -2,7 +2,7 @@
 
 This is our group project for the course Building NLP Applications (2023)!
 
-## **Structure of the Course:** (aka what we have done each week)
+## **Structure of the Course:**
 
 
 **Week 1:**
@@ -28,4 +28,10 @@ Search engine in a web UI
 
 Text mining/plotting
 
-(We will update this GitHub repository as the course progresses.)
+**Week 6:**
+
+Starting to work with the final project
+
+**Week 7:**
+
+Finishing the final project

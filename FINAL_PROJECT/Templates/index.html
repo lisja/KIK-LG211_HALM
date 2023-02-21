@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document Search</title>
+    <style>
+      @import url('https://fonts.cdnfonts.com/css/ninja-naruto');
+      body {
+        font-family: 'Ninja Naruto', sans-serif;
+        background-color: #f5a056;
+      }
+      h1 {
+        text-align: center;
+        color: #efdc92;
+        text-shadow: 2px 2px #f07d0b;
+        font-size: 4rem;
+      }
+      form {
+        margin: auto;
+        width: 50%;
+        padding: 50px;
+        background-color: #f8d33e;
+        box-shadow: 0px 0px 10px 0px #888;
+        border-radius: 5px;
+      }
+      input[type=text], input[type=submit] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      input[type=submit] {
+        background-color: #c0392b;
+        color: white;
+        cursor: pointer;
+      }
+      .results {
+        margin: auto;
+        width: 50%;
+        padding: 20px;
+        background-color: #f1c40f;
+        box-shadow: 0px 0px 10px 0px #888;
+        text-align: center;
+        border-radius: 5px;
+      }
+      .result {
+        margin: 10px;
+        padding: 10px;
+        border: 2px solid #e74c3c;
+        border-radius: 5px;
+      }
+      .result h3 {
+        margin-top: 0;
+        color: #625e57;
+      }
+      .result p {
+        margin-bottom: 0;
+      }
+      .logo {
+        display: block;
+        margin: 0 auto;
+        width: 480px;
+        height: 200px;
+        background-image: url('naruto-logo.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo"></div>
+    <h1>HALM Naruto Search</h1>
+    <form action="/" method="post">
+      <p>Enter your query:</p>
+      <input type="text" name="input_query">
+      <p>Select the mode of search:</p>
+      <input type="radio" name="mode" value="boolean">Boolean
+      <input type="radio" name="mode" value="tfv">TF-IDF
+      <input type="radio" name="mode" value="stems">Stems
+      <br><br>
+      <input type="submit" value="Search">
+    </form>
+    {% if results %}
+    <div class="results">
+      <h2>Results</h2>
+      <h3>Number of hits: {{ amount }}</h3>
+      {% for result in results %}
+      <div class="result">
+        <h3>{{ result["article_name"] }}</h3>
+        <p>{{ result["article_score"] }}</p>
+        <p>{{ result["article_content"] }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </body>
+</html>
