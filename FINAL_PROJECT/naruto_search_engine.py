@@ -283,7 +283,6 @@ def index():
              additional_tokens = find_related_tokens_from_stem(input_query)
              matches, amount = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             
-    amount = len(matches) # the amount of articles found
     return render_template('index.html', results=matches, amount=amount)
 
 if __name__ == '__main__':
