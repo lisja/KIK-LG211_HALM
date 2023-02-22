@@ -16,15 +16,25 @@ def readandcut(file_path):
 
     text = str(text)
 
-    cuttext = text.split("//%")
-    cuttext = cuttext[:-1]
+    cuttext = re.split(r'\/\/% \d+$', text, 0, re.MULTILINE)
+    
     return text, cuttext
 
 def linesplitter_and_cleaner(document):
-    doc_lines = document.splitlines()
+
+    # Splits documents (episodes) into a list of speech lines including the timestamp
+    doc_lines = re.split(r'^\d+$', document, 0, re.MULTILINE)
+    #doc_lines = document.splitlines()
+
     for line in doc_lines:
         if len(line) < 1:
             doc_lines.remove(line)
+    """
+    doc_lines_no_timestamps = doc_lines
+    
+    for line in doc_lines_no_timestamps:
+        line = re.sub('00:.*0',  '', line)
+    """
     return doc_lines
 
 # 1c default file_path used
@@ -34,40 +44,8 @@ file_path = "naruto3.txt"
 # string into "text" and split articles into "documents"
 text, documents = readandcut(file_path)
 
-def print_output(hits_list, bool_or_tfv_or_stems):
-        pass
-        """
-        print("\nThere are/is ", len(hits_list), " hit(s).\n")
-        print("-"*30)
-        for i, doc_idx in enumerate(hits_list):
-                #tfv gives tuples, so to make the code work, it has to be split into score and the index
-                if type(doc_idx) == tuple:
-                        score = doc_idx[0]
-                        doc_idx = doc_idx[1]
-                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-                article_name = doc_lines[0]
-                first_line = doc_lines[1]
-                #Deletes the article name tag from the article_name
-                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-                if bool_or_tfv_or_stems == "tfv":
-                    print("Article: {:s}\nScore: {:f}\nContent: {:s}...".format(article_name, score, first_line[:100]))
-                elif bool_or_tfv_or_stems == "boolean":
-                    boolean_return = "Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100])
-                    print(boolean_return)
-                elif bool_or_tfv_or_stems == "stems":
-                    print("Article: {:s}\nContent: {:s}...".format(article_name, first_line[:100]))
-                print("-"*30)
-        """        
-        #return render_template("index.html")
-"""
-                #Ask if print 10 more or stop printing
-                if i % 10 == 0 and i > 1:
-                        stop_or_continue = input("\nWould you like more results (Y / N)? ")
-                        if stop_or_continue == "N" or stop_or_continue == "n":
-                                break
-"""
-def search_bool(input_query, bool_or_tfv): # search the query
- #token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b',
+def search_bool(input_query, bool_or_tfv): # search the boolean query
+    
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b', ngram_range=(1, 2))
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
@@ -75,50 +53,42 @@ def search_bool(input_query, bool_or_tfv): # search the query
     t2i = cv.vocabulary_
     
     try:
-        
+                
         hits_matrix = eval(rewrite_query(input_query))
         hits_list = list(hits_matrix.nonzero()[1])
-        #print_output(hits_list, bool_or_tfv)
         hits=[]
+
         for i, doc_idx in enumerate(hits_list):
 
-                #tfv gives tuples, so to make the code work, it has to be split into score and the index
-                if type(doc_idx) == tuple:
-                        score = doc_idx[0]
-                        doc_idx = doc_idx[1]
+            doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+            
+            episode_number = doc_idx
+            
+            timestamp_and_lines_list = []
+            
+            
+            for i in range(1, len(doc_lines)):
+                if input_query in doc_lines[i].lower():
+                    timestamp = doc_lines[i][:31]
+                    line = doc_lines[i][31:]
 
-                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-                article_name = doc_lines[0]
-                f1rst_line = []
-                for i in range(1, len(doc_lines)):
-                    if input_query in doc_lines[i]:
-                        f1rst_line.append(doc_lines[i-1])
-                        f1rst_line.append(doc_lines[i])
+                    timestamp_and_lines_tuple = (timestamp, line)
 
-                first_line = '\n'.join(f1rst_line)
+                    timestamp_and_lines_list.append(timestamp_and_lines_tuple)
 
+            for timestamp_and_line in timestamp_and_lines_list:
+                #episode_line = timestamp_and_line[0] + ":" + timestamp_and_line[1] + "\n"
+                hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
 
-                #Deletes the article name tag from the article_name
-                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-                hits.append({"article_name":article_name, "article_content":first_line})
-
-
-        print()
-    except KeyError:
-        return "Query not found in the documents."
-    except SyntaxError:
-        return "AND', 'AND NOT', and 'OR' are commands. Use lowercase, e.g. 'and', 'not', or 'or'"
-    print()
-
-    #In case of an error, returns error:
-    try:
-        return hits
+        return hits, len(hits)
+        
     except:
         hits=[]
+        amount = 0
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
 
 def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
 
@@ -146,28 +116,35 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
     
         #print("Additional tokens from Stemmer: ", additional_tokens)
         for i, doc_idx in enumerate(hits_list):
+            
+            doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+            episode_number = doc_idx
+            first_line = '\n'.join(doc_lines[:5])
 
-                #tfv gives tuples, so to make the code work, it has to be split into score and the index
-                if type(doc_idx) == tuple:
-                        score = doc_idx[0]
-                        doc_idx = doc_idx[1]
+            timestamp_and_lines_list = []
+            
+            # Separate timestamp and line
+            for i_line in range(1, len(doc_lines)):
+                if input_query in doc_lines[i_line].lower():
+                    timestamp = doc_lines[i_line][:31]
+                    line = doc_lines[i_line][31:]
 
-                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-                article_name = doc_lines[0]
-                first_line = '\n'.join(doc_lines[:5])
+                    timestamp_and_lines_tuple = (timestamp, line)
 
-                #Deletes the article name tag from the article_name
-                #article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-                hits.append({"article_name":article_name, "article_content":first_line[:100]})          
+                    timestamp_and_lines_list.append(timestamp_and_lines_tuple)
 
+            for timestamp_and_line in timestamp_and_lines_list:
+                hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
 
-        return hits
+        return hits, len(hits)
+
     except:
         hits=[]
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
+        amount = 0
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
     
 
 def search_tfv(input_query, bool_or_tfv_or_stems):
@@ -196,37 +173,47 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
                 reverse=True)
 
         hits=[]
-        
-        for i, doc_idx in enumerate(ranked_scores_and_doc_ids):
 
-                #tfv gives tuples, so to make the code work, it has to be split into score and the index
-                if type(doc_idx) == tuple:
-                        score = doc_idx[0]
-                        doc_idx = doc_idx[1]
+                    
+        for i_doc, doc_idx in enumerate(ranked_scores_and_doc_ids):
 
-                doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-                article_name = doc_lines[0]
-                first_line = doc_lines[1]
-                rating = "Rating: " + str(score)
+            score = doc_idx[0] #Unused score number, probably not necessary for user.
+            doc_idx = doc_idx[1]
+            count = 0
 
-                #Deletes the article name tag from the article_name
-                article_name = re.sub(r'<article name="(.*?)">', r'\1', article_name)
-                hits.append({"article_name":article_name, "article_score":rating, "article_content":first_line[:100]})
-                
-        try:
-            return hits
-        except:
-            hits=[]
-            article_name = "Error"
-            article_content = "Error"
-            hits.append({"article_name":article_name, "article_content":article_content})
-            return hits
+            doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+            
+            episode_number = doc_idx
+
+            # Separate timestamp and line
+            for i_line in range(1, len(doc_lines)):
+                if input_query in doc_lines[i_line].lower():
+                    timestamp = doc_lines[i_line][:31]
+                    line = doc_lines[i_line][31:]
+
+                    # Count number of hits on a speech line
+                    count += len(re.findall(input_query, line.lower()))
+
+            # "Best match" for the best one, and then for example "2. best match" for the rest     
+            if i_doc == 0:
+                best_match = "Best match: Episode " + str(doc_idx)
+            elif i_doc > 0:
+                best_match = str(i_doc+1) + ". best match: Episode " + str(doc_idx)
+
+            # Make the count into a string plus the "number of hits" string before it
+            count_str = "Number of hits: " + str(count)
+            
+            hits.append({"article_name":episode_number, "article_score":best_match, "article_content":count_str})
+      
+        return hits, len(hits)
+
     except:
         hits=[]
+        amount = 0
         article_name = "Error"
-        article_content = "Error"
+        article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
-        return hits
+        return hits, amount
 
 
 
@@ -282,22 +269,19 @@ def index():
     file_path = "naruto3.txt"
     text, documents = readandcut(file_path)
     matches = []
+    amount = 0
     if request.method == 'POST':
         input_query = request.form.get('input_query')
         bool_or_tfv_or_stems = request.form.get('mode')
         if bool_or_tfv_or_stems == "boolean":
-            matches = search_bool(input_query, bool_or_tfv_or_stems)
-            #print_output(hits_list, bool_or_tfv_or_stems)
+            matches, amount = search_bool(input_query, bool_or_tfv_or_stems)
             
         elif bool_or_tfv_or_stems == "tfv":
-             matches = search_tfv(input_query, bool_or_tfv_or_stems)
-            # print_output(hits_list, bool_or_tfv_or_stems)
+             matches, amount = search_tfv(input_query, bool_or_tfv_or_stems)
             
         elif bool_or_tfv_or_stems == "stems":
              additional_tokens = find_related_tokens_from_stem(input_query)
-             #matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
-             matches = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
-            # print_output(hits_list, bool_or_tfv_or_stems)
+             matches, amount = search_stems(input_query, bool_or_tfv_or_stems, additional_tokens)
             
     amount = len(matches) # the amount of articles found
     return render_template('index.html', results=matches, amount=amount)
