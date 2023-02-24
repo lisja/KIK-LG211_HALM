@@ -1,51 +1,11 @@
-from urllib.request import urlopen
-import collections
+"""
+1st Visualization – shows a Wordcloud of most 
+frequent words when removed [1] stopwords and [2] Heroes.
+"""
+
 from matplotlib import pyplot as plt
-import re
 import wordcloud
-# import socket
-# socket.gethostbyname("")
-
-
-# naruto_txt = "https://raw.githubusercontent.com/lisja/KIK-LG211_HALM/main/WEEK_5/naruto3.txt"
-naruto_txt = "/Users/Haralds/Desktop/H/Helsinki/Helsinki-Courses-2021/building-nlp-applications/KIK-LG211_HALM/WEEK_5/naruto3.txt"
-
-en_stopwords = ["it", "you", "them", "that", "right", "what", "me", 
-"this", "oh", "here", "now", "but", "no", "too" ]
-
-def get_frequency_list(data_url):
-  # data = urlopen(data_url)
-
-  with open(data_url, "r") as file:
-    text = file.read()
-    # data = str(file)
-
-    words = []
-    # text = data.read().decode(data.headers.get_content_charset())
-    lines = text.split("\n")
-    for line in lines:
-      # TODO – add line to include only lines starting with non-digit
-      # if not line[0].isdigit():
-      array = line.split(" ")
-      array = [item.lower() for item in array]
-      words.extend(array)
-    
-    frequency_list = dict(collections.Counter(words))
-    filtered_frequency_list = dict()
-    for k,v in frequency_list.items():
-      stripped = re.sub("[,\.:;-?!…'’]", "", k)
-      if frequency_list.get(stripped, 0) > v and stripped not in en_stopwords:
-        filtered_frequency_list[stripped] = filtered_frequency_list.get(stripped, 0) + v
-
-  # TODO – add line to check IF word not in STOPWORDS list, and then only include
-  # TODO – stopwords list need to be created > updated with more
-
-    return {k:v for k,v in filtered_frequency_list.items() if len(k) > 1}
-
-
-DATA = naruto_txt
-freqs = get_frequency_list(DATA)
-print(freqs)
+from data_processing_file import freqs
 
 wcloud = wordcloud.WordCloud().generate_from_frequencies(freqs)
 plt.imshow(wcloud)
