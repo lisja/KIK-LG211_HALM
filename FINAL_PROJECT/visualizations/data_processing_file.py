@@ -39,6 +39,9 @@ heroes_list_FINAL = ['Kiba', 'Akamaru', 'Yakumo', 'Shino', 'Naruto', 'Unkai',
 'Rokusuke', 'Raiga', 'Karashi', 'Ranmaru', 'Wagarashi', 'Onbaa', 'Yamanaka', 'Onbu', 'Sansho', 'Kanpachi', 'Degarashi', 'Natsuhi',
 'Yagura', 'Gekko', 'Kubisaki', 'Gosa', 'Kurosuki', 'Agira', 'Wasabi']
 
+heroes_lowercased = [item.lower() for item in heroes_list_FINAL]
+# print("heroes_lowercased: ", heroes_lowercased)
+
 
 
 # 1 PROCESSING PART for one_wordcloud file:
@@ -58,7 +61,7 @@ def get_frequency_list(data_url):
         filtered_frequency_list = dict()
         for k,v in frequency_list.items():
             stripped = re.sub("[,\.:;-?!…'’]", "", k)
-            if frequency_list.get(stripped, 0) > v and stripped not in en_stopwords and stripped not in heroes_list_FINAL:
+            if frequency_list.get(stripped, 0) > v and stripped not in en_stopwords and stripped not in heroes_list_FINAL and stripped not in heroes_lowercased:
                 filtered_frequency_list[stripped] = filtered_frequency_list.get(stripped, 0) + v
 
         result = {k:v for k,v in filtered_frequency_list.items() if len(k) > 1}
