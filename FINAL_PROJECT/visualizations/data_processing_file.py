@@ -2,6 +2,7 @@ from urllib.request import urlopen
 import collections
 import re
 from naruto_frequencies_dict import frequencies_dict
+from sklearn.feature_extraction.text import CountVectorizer
 
 """
 This file contains functionality to tokenize naruto.txt
@@ -23,8 +24,8 @@ heroes_dict = {
   'Tenten': 24, 'Gaara': 123, 'Itachi': 21, 'Kimimaro': 12,  'Mizuki': 50, 'Zabuza': 41, 'Senbon': 3, 'Inari': 26, 'Haku': 22, 'Iruka': 42,  'Konohamaru': 15, 'Moegi': 7, 'Shikamaru': 75, 
   'Todoroki': 13, 'Kurama': 5, 'Yuhi': 5, 'Toki': 5, 'Akatsuki': 11,'Toad': 17, 'Choji': 84, 'Jiraiya': 54, 
   'Jiga': 2, 'Ayame': 14, 'Fuma': 3, 'Sasame': 37, 'Arashi': 21, 'Temari': 22, 'Kankuro': 16, 'Shukaku': 13,'Kunihisa': 1, 'Tokichi': 3, 
-  'Sarutobi': 13, 'Ibiki': 8, 'Bikochu': 43, 'Kamizuru': 1, 'Tsunade': 2, 'Hanzaki': 1, 'Hizashi': 3, 'Hiashi': 6, 
-  'Kisame': 12, 'Neji': 1, 'Orochimaru': 1, 'Yurinojou': 3, 'Morino': 6, 'Mitarashi': 1, 'Kagetsu': 3, 'Futa': 3, 'Akahoshi': 39, 
+  'Sarutobi': 13, 'Ibiki': 8, 'Bikochu': 43, 'Kamizuru': 1, 'Hanzaki': 1, 'Hizashi': 3, 'Hiashi': 6, 
+  'Kisame': 12, 'Yurinojou': 3, 'Morino': 6, 'Mitarashi': 1, 'Kagetsu': 3, 'Futa': 3, 'Akahoshi': 39, 
   'Hokuto': 6, 'Kagero': 2, 'U-zu-ma-ki': 1, 'Fukusuke': 5, 'Rokusuke': 11, 'Raiga': 28, 'Karashi': 26, 'Ranmaru': 26, 'Wagarashi': 4, 'Onbaa': 10, 
   'Yamanaka': 3, 'Onbu': 1, 'Sansho': 7, 'Kanpachi': 1, 'Degarashi': 2, 'Natsuhi': 7, 'Yagura': 10, 'Gekko': 1, 'Kubisaki': 4, 'Gosa': 1, 
   'Kurosuki': 1, 'Agira': 1, 'Wasabi': 1
@@ -103,3 +104,96 @@ def get_frequency_list_second(data_url):
         filtered_frequency_list[stripped] = filtered_frequency_list.get(stripped, 0) + v
 
     return {k:v for k,v in filtered_frequency_list.items() if len(k) > 1}
+  
+
+# 3 – heroes_on_timeline code
+
+# naruto_txt = "https://raw.githubusercontent.com/lisja/KIK-LG211_HALM/main/WEEK_5/naruto3.txt"
+naruto_txt = "/Users/Haralds/Desktop/H/Helsinki/Helsinki-Courses-2021/building-nlp-applications/KIK-LG211_HALM/WEEK_5/naruto3.txt"
+
+print("len(heroes): ", len(heroes_dict))
+
+def readandcut(file_path):
+    with open(file_path, "r") as file:
+        text = file.read()
+
+    text = str(text)
+
+    cuttext = text.split("//%")
+    cuttext = cuttext[:-1]
+    return text, cuttext
+
+text, documents = readandcut(naruto_txt)
+# print("text: ", documents)
+
+d = {"AND": "&",
+     "OR": "|",
+     "NOT": "1 -",
+     "(": "(",
+     ")": ")"}
+
+def rewrite_token(t):
+    return d.get(t, 'td_matrix[t2i["{:s}"]]'.format(t)) # rewrites tokens
+
+def rewrite_query(query): # rewrite every token in the query
+    return " ".join(rewrite_token(t) for t in query.split())
+
+cv = CountVectorizer(lowercase=False, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
+sparse_matrix = cv.fit_transform(documents)
+# print("sparse_matrix: ", sparse_matrix)
+dense_matrix = sparse_matrix.todense()
+# print("dense_matrix: ", dense_matrix)
+td_matrix = dense_matrix.T
+t2i = cv.vocabulary_
+# print("t2i: ", t2i)
+
+
+large_dict = {}
+for key, value in heroes_dict.items():
+  # if value > 50:
+  #   print("key, value: ", key, value)
+  hits_matrix = eval(rewrite_query(key))
+  hits_list = list(hits_matrix.nonzero()[1])
+  large_dict[key] = hits_list
+# print("large_dict: ", large_dict)
+
+# sort Heroes in the order of appearance in series
+# sorted_list = [[key, value] for key, value in large_dict.items() if len(value) > 10]
+# showing only Heroes who appear in MORE THAN 20 series:
+
+sorted_list = [[key, value] for key, value in large_dict.items()]
+# sorted_list = [[key, value] for key, value in large_dict.items() if len(value) > 30]
+# sorted_list = sorted(sorted_list, key=lambda x: x[1])
+sorted_list = sorted(sorted_list, key=lambda x: len(x[1]), reverse=True)
+print("sorted_list: ", sorted_list)
+
+# create x,y data_points for every 
+x_values = []
+y_values = []
+for my_list in sorted_list:
+  # print(my_list)
+  for el in my_list[1]:
+    x_values.append(el)
+    y_values.append(my_list[0])
+    
+# print(len(x_values))
+# print(len(y_values))
+
+y = y_values
+# # print(y)
+x = x_values
+# print(x)
+
+
+
+# 4 – getting values for HORIZONTAL BAR PLOT –
+bar_x1 = []
+bar_x2 = []
+bar_y = []
+for pair in sorted_list:
+   print(pair[0], heroes_dict[pair[0]], len(pair[1]))
+   if len(pair[1]) > 50:
+    bar_y.append(pair[0])
+    bar_x1.append(heroes_dict[pair[0]])
+    bar_x2.append(len(pair[1]))
+   
