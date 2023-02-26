@@ -2,7 +2,18 @@
 
 from matplotlib import pyplot as plt
 import numpy as np
-from data_processing_file import bar_x1, bar_x2, bar_y
+from data_processing_file import sorted_list, heroes_dict
+
+bar_x1 = []
+bar_x2 = []
+bar_y = []
+for pair in sorted_list:
+   print(pair[0], heroes_dict[pair[0]], len(pair[1]))
+   if len(pair[1]) > 50:
+    bar_y.append(pair[0])
+    bar_x1.append(heroes_dict[pair[0]])
+    bar_x2.append(len(pair[1]))
+
 
 f = plt.figure(figsize=(50,30))
 ax1 = f.add_subplot(111)

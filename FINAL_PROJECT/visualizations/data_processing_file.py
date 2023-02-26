@@ -157,43 +157,16 @@ for key, value in heroes_dict.items():
   large_dict[key] = hits_list
 # print("large_dict: ", large_dict)
 
-# sort Heroes in the order of appearance in series
-# sorted_list = [[key, value] for key, value in large_dict.items() if len(value) > 10]
-# showing only Heroes who appear in MORE THAN 20 series:
-
 sorted_list = [[key, value] for key, value in large_dict.items()]
+# SORTED by order of appearance of all heroes in the series
+sorted_list = sorted(sorted_list, key=lambda x: x[1])
+
+
 # sorted_list = [[key, value] for key, value in large_dict.items() if len(value) > 30]
-# sorted_list = sorted(sorted_list, key=lambda x: x[1])
-sorted_list = sorted(sorted_list, key=lambda x: len(x[1]), reverse=True)
-print("sorted_list: ", sorted_list)
-
-# create x,y data_points for every 
-x_values = []
-y_values = []
-for my_list in sorted_list:
-  # print(my_list)
-  for el in my_list[1]:
-    x_values.append(el)
-    y_values.append(my_list[0])
-    
-# print(len(x_values))
-# print(len(y_values))
-
-y = y_values
-# # print(y)
-x = x_values
-# print(x)
+# sorted_list = sorted(sorted_list, key=lambda x: len(x[1]), reverse=True)
+# print("sorted_list: ", sorted_list)
 
 
 
-# 4 – getting values for HORIZONTAL BAR PLOT –
-bar_x1 = []
-bar_x2 = []
-bar_y = []
-for pair in sorted_list:
-   print(pair[0], heroes_dict[pair[0]], len(pair[1]))
-   if len(pair[1]) > 50:
-    bar_y.append(pair[0])
-    bar_x1.append(heroes_dict[pair[0]])
-    bar_x2.append(len(pair[1]))
+
    
