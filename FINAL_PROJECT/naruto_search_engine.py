@@ -29,12 +29,6 @@ def linesplitter_and_cleaner(document):
     for line in doc_lines:
         if len(line) < 1:
             doc_lines.remove(line)
-    """
-    doc_lines_no_timestamps = doc_lines
-    
-    for line in doc_lines_no_timestamps:
-        line = re.sub('00:.*0',  '', line)
-    """
     return doc_lines
 
 # 1c default file_path used
@@ -46,7 +40,7 @@ text, documents = readandcut(file_path)
 
 def search_bool(input_query, bool_or_tfv): # search the boolean query
     
-    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b', ngram_range=(1, 2))
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z_À-ÿ\-]+\b', ngram_range=(1, 2))
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
@@ -85,14 +79,14 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
     except:
         hits=[]
         amount = 0
-        article_name = "Error"
+        article_name = "No results!"
         article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
         return hits, amount
 
 def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
 
-    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z0-9_À-ÿ\-]+\b')
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z_À-ÿ\-]+\b')
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
@@ -122,12 +116,13 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
             first_line = '\n'.join(doc_lines[:5])
 
             timestamp_and_lines_list = []
-            
+            pattern = re.compile(r'\b%s' % input_query, re.I)            
+           
             # Separate timestamp and line
-            for i_line in range(1, len(doc_lines)):
-                if input_query in doc_lines[i_line].lower():
-                    timestamp = doc_lines[i_line][:31]
-                    line = doc_lines[i_line][31:]
+            for i,doc in enumerate(doc_lines):
+                if pattern.search(doc):
+                    timestamp = doc[:31]
+                    line = doc[31:]
 
                     timestamp_and_lines_tuple = (timestamp, line)
 
@@ -140,7 +135,7 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
 
     except:
         hits=[]
-        article_name = "Error"
+        article_name = "No results!"
         article_content = "Query not found in the documents."
         amount = 0
         hits.append({"article_name":article_name, "article_content":article_content})
@@ -210,7 +205,7 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
     except:
         hits=[]
         amount = 0
-        article_name = "Error"
+        article_name = "No results!"
         article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
         return hits, amount
