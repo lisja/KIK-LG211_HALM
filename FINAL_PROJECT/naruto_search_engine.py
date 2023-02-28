@@ -51,26 +51,26 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_
-    
+
     try:
-                
-        hits_matrix = eval(rewrite_query(input_query))
+        hits_matrix = eval(rewrite_query(input_query)) 
         hits_list = list(hits_matrix.nonzero()[1])
         hits=[]
 
         for i, doc_idx in enumerate(hits_list):
 
             doc_lines = linesplitter_and_cleaner(documents[doc_idx])
-            
+
             episode_number = doc_idx
-            
+
             timestamp_and_lines_list = []
-            
-            
-            for i in range(1, len(doc_lines)):
-                if input_query in doc_lines[i].lower():
-                    timestamp = doc_lines[i][:31]
-                    line = doc_lines[i][31:]
+
+            pattern = re.compile(r'\b%s\b' % input_query, re.I)
+
+            for i,doc in enumerate(doc_lines):
+                if pattern.search(doc):
+                    timestamp = doc[:31]
+                    line = doc[31:]
 
                     timestamp_and_lines_tuple = (timestamp, line)
 
@@ -81,7 +81,7 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
                 hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
 
         return hits, len(hits)
-        
+
     except:
         hits=[]
         amount = 0
