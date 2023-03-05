@@ -79,20 +79,61 @@
         width: 50%;
         height: auto;
       }
+      #search_query_button {
+        background-color: #c0392b;
+        color: white;
+        cursor: pointer;
+        width: 400px;
+      }
+      #see_plots_button {
+        background-color: rgb(68, 130, 239);
+        color: white;
+        cursor: pointer;
+        width: 200px;
+        height: 38px;
+      }
+      #buttons_div {
+        display: flex;
+        justify-content: space-between;
+        /* flexbox:  */
+      }
+      #select_engine_type {
+        display: block;
+      }
+      .button {
+        display: block;
+        width: 115px;
+        height: 50px;
+        background: #4E9CAF;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        line-height: 25px;
+      }
     </style>
   </head>
   <body>
     <div class="logo"></div>
     <h1>HALM Naruto Search</h1>
     <form action="/" method="post">
-      <p>Enter your query:</p>
-      <input type="text" name="input_query">
-      <p>Select the mode of search:</p>
-      <input type="radio" name="mode" value="boolean">Boolean
-      <input type="radio" name="mode" value="tfv">TF-IDF
-      <input type="radio" name="mode" value="stems">Stems
+      <div id="select_engine_type">
+        <label>Select the mode of search:</label>
+        <input type="radio" name="mode" value="boolean">Boolean
+        <input type="radio" name="mode" value="tfv">TF-IDF
+        <input type="radio" name="mode" value="stems">Stems
+      </div>
+
+      <!-- <p>Enter your query:</p> -->
+      <input type="text" name="input_query" placeholder="Input your query here...">
       <br><br>
-      <input type="submit" value="Search">
+      <div id="buttons_div">
+        <input class="button" id="search_query_button" type="submit" value="Search query">
+        <!-- <a class="button" id="search_query_button" href="{{ url_for('index') }}">Search Query </a> -->
+        <a class="button" id="see_plots_button" href="{{ url_for('see_plots') }}">See  Plots </a>
+      </div>
+
     </form>
     {% if not results %}
       <div class="image-container">
