@@ -280,5 +280,12 @@ def index():
             
     return render_template('index.html', results=matches, amount=amount)
 
+#Function see_plots() is associated with the address base URL + "/plots"
+@app.route('/plots', methods = ['GET', 'POST'])
+def see_plots():
+
+    #Render plots.html
+    return render_template('plots.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
