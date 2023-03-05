@@ -1,0 +1,89 @@
+/* @import url('https://fonts.cdnfonts.com/css/ninja-naruto'); */
+body {
+  font-family: 'Ninja Naruto', sans-serif;
+  background-color: #f5a056;
+}
+h1 {
+  text-align: center;
+  color: #efdc92;
+  text-shadow: 2px 2px #f07d0b;
+  font-size: 4rem;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
+  width: 48px;
+  height: 20px;
+  background-image: url('static/naruto-logo.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.visualizations-container { 
+  /* display: flex;
+  justify-content: center;  */
+  width: 1000px; 
+  /* height: 200px; */
+}
+
+img {
+  width: 500px;
+  height: auto;
+}
+/* .image-container img {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  height: auto;
+} */
+/* #search_query_button {
+  background-color: #c0392b;
+  color: white;
+  cursor: pointer;
+  width: 400px;
+}
+#see_plots_button { */
+  /* background-color: rgb(68, 130, 239);
+  color: white;
+  cursor: pointer;
+  width: 200px;
+  height: 38px;
+}
+#buttons_div {
+  display: flex;
+  justify-content: space-between;
+} */
+
+/* .button {
+  display: block;
+  width: 115px;
+  height: 50px;
+  background: #4E9CAF;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  line-height: 25px;
+} */
+
+
+.image-wrapper-div {
+  padding: 15px;
+  margin: 40px;
+}
+
+.wordclouds-div {
+  padding: 15px;
+  margin: 80px;
+  margin-left: 80px;
+  width: 1000px;
+  height: 500px;
+  display: flex;
+  justify-content: space-around;
+}
+
+/* flex-grow: 0;
+flex-shrink: 0;
+flex-basis: 40px; */
