@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Visualizations</title>
+        <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='styles/visualizations_styles.css') }}"/> 
+    </head>
+    <body>
+        <h1>Static visualizations of Naruto series data</h1>
+        <p>
+            For the code creating visualizations see the folder –
+            <a href= "https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations">
+            https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations
+            </a> 
+        </p>
+
+
+        <p>Two Wordcloud visualizations. The first one is all character names. 
+            The second one is all other names in series – minus character names and stopwords.
+        </p>
+
+        <div class="visualizations-container">
+            <div class="wordclouds-div" >
+                <div class="image-wrapper-div" color="blue">
+                    <img src="static/one_wordcloud_non_heroes.png" alt="fire">
+                </div>
+                <div class="image-wrapper-div">
+                    <img src="static/two_wordcloud_heroes.png" alt="cat">
+                </div>
+            </div>
+
+            <div class="image-wrapper-div">
+                <img src="static/89_heroes_in_219_series.png" alt="heroes_on_timeline">
+            </div>
+            <div class="image-wrapper-div">
+                <img src="static/hereos_who_appear_in_more_than_20_series.png" alt="hereos_who_appear_in_more_than_20_series">
+            </div>
+            <div class="image-wrapper-div">
+                <img src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
+            </div>
+
+        </div>
+
+        <!--Reload the page with variable "query" in the URL-->
+        <!-- <form>
+            <input type="text" name="query" autofocus placeholder="cat">
+            <input type="submit" value="Search">
+            <input type="submit" value="Engine">
+        </form> -->
+        <!-- <table> -->
+            <!--Go through each item in the "matches" variable sent from
+                search() function in the Flask app-->
+            <!-- {% for item in matches %} -->
+            <!-- <tr> -->
+                <!--Display the name of the item based on the "name" key-->
+                <!-- <td>{{ item["name"] }}</td> -->
+                <!--Display the image of the item based on the "source" key-->
+                <!-- <td><img src="/static/{{ item["source"] }}" style="width: 400px; height 100%"></td> -->
+            <!-- </tr> -->
+            <!--End for loop-->
+            <!-- {% endfor %} -->
+        <!-- </table> -->
+    </body>
+</html>
+                               
