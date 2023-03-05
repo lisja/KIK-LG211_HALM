@@ -9,4 +9,6 @@ from data_processing_file import freqs
 
 wcloud = wordcloud.WordCloud().generate_from_frequencies(freqs)
 plt.imshow(wcloud)
+# next line - to remove axis, ticks and numbers around wordcloud
+plt.axis("off")
 plt.show()
