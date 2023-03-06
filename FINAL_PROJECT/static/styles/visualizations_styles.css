@@ -75,13 +75,26 @@ img {
 }
 
 .wordclouds-div {
-  padding: 15px;
-  margin: 80px;
-  margin-left: 80px;
-  width: 1000px;
-  height: 500px;
+  /* padding: 15px; */
+  margin: 40px;
+  /* border-left: 50px; */
+  margin-left: 200px;
+  width: 1100px;
+  height: auto;
   display: flex;
   justify-content: space-around;
+}
+
+.heroes_img {
+  width: 1000px;
+  height: auto;
+}
+
+#wordcloud_p {
+  margin-top: 60px;
+  background-color: whitesmoke;
+  width: 130px;
+  height: 270px;
 }
 
 /* flex-grow: 0;

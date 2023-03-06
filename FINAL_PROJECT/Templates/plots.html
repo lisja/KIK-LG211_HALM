@@ -13,29 +13,39 @@
             </a> 
         </p>
 
-
-        <p>Two Wordcloud visualizations. The first one is all character names. 
-            The second one is all other names in series – minus character names and stopwords.
-        </p>
-
         <div class="visualizations-container">
+
             <div class="wordclouds-div" >
+                <p id="wordcloud_p">Two Wordcloud visualizations. 
+                    <br>
+                    <br>
+                    The first one is all heroes. 
+                    <br>
+                    <br>
+                    The second one is all other words in series – minus heroes names and stopwords.
+                </p>
+                <div class="image-wrapper-div">
+                    <img src="static/two_wordcloud_heroes.png" alt="cat">
+                </div>                
                 <div class="image-wrapper-div" color="blue">
                     <img src="static/one_wordcloud_non_heroes.png" alt="fire">
                 </div>
-                <div class="image-wrapper-div">
-                    <img src="static/two_wordcloud_heroes.png" alt="cat">
-                </div>
             </div>
 
             <div class="image-wrapper-div">
-                <img src="static/89_heroes_in_219_series.png" alt="heroes_on_timeline">
+                <img class="heroes_img" src="static/89_heroes_in_219_series.png" alt="heroes_on_timeline">
             </div>
             <div class="image-wrapper-div">
-                <img src="static/hereos_who_appear_in_more_than_20_series.png" alt="hereos_who_appear_in_more_than_20_series">
-            </div>
+                <img class="heroes_img" src="static/hereos_who_appear_in_more_than_20_series.png" alt="hereos_who_appear_in_more_than_20_series">
+            </div>            
+            
+            <!-- <div class="image-wrapper-div">
+                <img id="heroes_img" src="static/three_heroes_on_timeline.png" alt="heroes_on_timeline">
+            </div> -->
+
+
             <div class="image-wrapper-div">
-                <img src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
+                <img class="heroes_img" src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
             </div>
 
         </div>

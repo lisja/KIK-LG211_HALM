@@ -31,5 +31,6 @@ ax1.set_xlabel('Series Nr', fontsize=18)
 ax1.set_title('All 89 Heroes on timeline of 219 Series', fontsize=24)
 
 # # plt.xticks(rotation=90)
+plt.savefig('three_heroes_on_timeline.png', figsize=(5,4), dpi=50)
 plt.show()
 
