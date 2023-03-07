@@ -52,28 +52,33 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_
+    rewritten_query = rewrite_query(input_query)
     
     try:
 
-        hits_matrix = eval(rewrite_query(input_query))
+        hits_matrix = eval(rewritten_query)
         hits_list = list(hits_matrix.nonzero()[1])
         print(hits_list)
         hits=[]
         for i, doc_idx in enumerate(hits_list):
-            
+
             doc_lines = linesplitter_and_cleaner(documents[doc_idx])
             timestamp_and_lines_list = []
             episode_number = doc_idx
-            
             doc_lines_sparse_matrix = cv.fit_transform(doc_lines)
             doc_lines_dense_matrix = doc_lines_sparse_matrix.todense()
-            #print(doc_lines_dense_matrix)
             td_matrix = doc_lines_dense_matrix.T
             t2i = cv.vocabulary_
-            doc_lines_hits_matrix = eval(rewrite_query(input_query))
-            #print(doc_lines_hits_matrix)
+  
+            try:
+                doc_lines_hits_matrix = eval(rewritten_query)
+            except Exception as e:
+                print(e)
+                continue
             doc_lines_hits_list = list(doc_lines_hits_matrix.nonzero()[1])
-            #print(doc_lines_hits_list)
+            print("doc lines: ", doc_lines_hits_list)
+
+
             timestamp_and_lines_list = []
 
             for i_line in doc_lines_hits_list:
