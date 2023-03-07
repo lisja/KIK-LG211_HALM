@@ -5,57 +5,69 @@ body {
 }
 h1 {
   text-align: center;
-  color: #efdc92;
+  color: #471245;
   text-shadow: 2px 2px #f07d0b;
   font-size: 4rem;
 }
-
 .logo {
   display: block;
   margin: 0 auto;
-  width: 48px;
-  height: 20px;
-  background-image: url('static/naruto-logo.png');
+  width: 480px;
+  height: 200px;
+  background-image: url('../naruto-logo.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
 .visualizations-container { 
-  /* display: flex;
-  justify-content: center;  */
   width: 1000px; 
-  /* height: 200px; */
 }
-
 img {
   width: 450px;
   height: auto;
 }
 
-#see_plots_button { 
-  
-  /* /* background-color: rgb(68, 130, 239); */
+.button {
+  display: block;
+  width: 115px;
+  height: 50px;
+  background: #4E9CAF;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  line-height: 25px;
+}
+
+#back_home_button { 
+  margin-top: 50px;
+  background-color: rgb(68, 130, 239);
   color: white;
   cursor: pointer;
   width: 200px;
   height: 38px;
 }
 
-#buttons_div {
-  display: flex;
-  justify-content: space-between;
-} 
-
-
 
 .heroes_img {
   width: 900px;
   height: auto;
 }
-
 .image-wrapper-div {
   padding: 5px;
   margin: 15px;
+}
+
+.intro-div {
+  /* padding: 15px; */
+  margin: 40px;
+  /* border-left: 50px; */
+  /* margin-left: 200px; */
+  width: 1000px;
+  height: auto;
+  display: flex;
+  justify-content: space-around;
 }
 
 .wordclouds-div {
@@ -76,6 +88,15 @@ img {
   background-color: whitesmoke;
   width: 200px;
   height: 270px;
+}
+
+#intro-par {
+  padding: 5px;
+  margin: 50px;
+  background-color: whitesmoke;
+  width: 700px;
+  height: 150px;
+  /* height: 200px; */
 }
 
 .timeline-div {

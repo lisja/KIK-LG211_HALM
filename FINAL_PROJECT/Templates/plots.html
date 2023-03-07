@@ -5,14 +5,26 @@
         <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='styles/visualizations_styles.css') }}"/> 
     </head>
     <body>
-        <h1>Static visualizations of Naruto series data</h1>
-        <p >
-            For the code creating visualizations see the folder –
-            <a href= "https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations">
-            https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations
-            </a> 
-        </p>
-
+        <div class="logo"></div>
+        <h1>Static Visualizations of <br> Naruto 219 Series data</h1>
+        <div class="intro-div">
+           <p id="intro-par">
+                5 Visualizations of Naruto 219 Series data.
+                <br>
+                <br>
+                Folder for Visualizations Code –
+                <a href= "https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations">
+                https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations
+                </a> 
+                <br>
+                <br>
+                Every Visualization has its own .py file + there is a common 
+                <br>
+                <b>data_processing_file.py</b>.
+            </p>
+            <a class="button" id="back_home_button" href="{{ url_for('index') }}">Back to Home page </a>
+        </div>
+        
         <div class="visualizations-container">
 
             <div class="wordclouds-div" >
@@ -39,7 +51,11 @@
                 <p class="white-par">3. Scatterplot of all 89 heroes on timeline. 
                     <br>
                     <br>
-                    In order of appearance in 219 series. Every appearance is data point of scatter-plot with opacity 0.7.
+                    In order of appearance in 219 series. 
+                    <br>
+                    <br>
+                    Every appearance is a data point of color blue and opacity 0.7. 
+                    Thus, more data points create bluer patches of data.
                 </p> 
             </div>
 
@@ -55,46 +71,24 @@
                 </div>    
 
             </div>
-                    
-            
 
             <div class="timeline-div">
-                <!-- <p id="wordcloud_p">THIRD one.  -->
 
                 <div class="image-wrapper-div">
                     <img class="heroes_img" src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
                 </div> 
-                <p class="white-par">5. Horizontal barplot of Heroes TOTAL mentions and UNIQUE SERIES present. 
-                    <br>
-                    <br>
-                    Ordered by most frequent Heroes, in total 11 Heroes recounted.
-                </p> 
+                <div>
+                    <p class="white-par">5. Horizontal barplot of Heroes TOTAL mentions and UNIQUE SERIES present. 
+                        <br>
+                        <br>
+                        Ordered by most frequent Heroes, in total 11 Heroes recounted.
+                    </p> 
+                    <a class="button" id="back_home_button" href="{{ url_for('index') }}">Back to Home page </a>
+                </div>
 
             </div>
 
-
-
         </div>
-
-        <!--Reload the page with variable "query" in the URL-->
-        <!-- <form>
-            <input type="text" name="query" autofocus placeholder="cat">
-            <input type="submit" value="Search">
-            <input type="submit" value="Engine">
-        </form> -->
-        <!-- <table> -->
-            <!--Go through each item in the "matches" variable sent from
-                search() function in the Flask app-->
-            <!-- {% for item in matches %} -->
-            <!-- <tr> -->
-                <!--Display the name of the item based on the "name" key-->
-                <!-- <td>{{ item["name"] }}</td> -->
-                <!--Display the image of the item based on the "source" key-->
-                <!-- <td><img src="/static/{{ item["source"] }}" style="width: 400px; height 100%"></td> -->
-            <!-- </tr> -->
-            <!--End for loop-->
-            <!-- {% endfor %} -->
-        <!-- </table> -->
     </body>
 </html>
                                
