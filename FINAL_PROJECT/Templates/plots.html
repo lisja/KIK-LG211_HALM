@@ -6,7 +6,7 @@
     </head>
     <body>
         <h1>Static visualizations of Naruto series data</h1>
-        <p>
+        <p >
             For the code creating visualizations see the folder –
             <a href= "https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations">
             https://github.com/lisja/KIK-LG211_HALM/tree/main/FINAL_PROJECT/visualizations
@@ -16,13 +16,13 @@
         <div class="visualizations-container">
 
             <div class="wordclouds-div" >
-                <p id="wordcloud_p">Two Wordcloud visualizations. 
+                <p class="white-par">Two Wordcloud visualizations. 
                     <br>
                     <br>
-                    The first one is all heroes. 
+                    1. Wordcloud of all HEROES in Naruto series. 
                     <br>
                     <br>
-                    The second one is all other words in series – minus heroes names and stopwords.
+                    2. Wordcloud of all OTHER words in series – MINUS heroes names and stopwords.
                 </p>
                 <div class="image-wrapper-div">
                     <img src="static/two_wordcloud_heroes.png" alt="cat">
@@ -32,21 +32,47 @@
                 </div>
             </div>
 
-            <div class="image-wrapper-div">
-                <img class="heroes_img" src="static/89_heroes_in_219_series.png" alt="heroes_on_timeline">
+            <div class="timeline-div">
+                <div class="image-wrapper-div">
+                    <img class="heroes_img" src="static/89_heroes_in_219_series.png" alt="heroes_on_timeline">
+                </div>   
+                <p class="white-par">3. Scatterplot of all 89 heroes on timeline. 
+                    <br>
+                    <br>
+                    In order of appearance in 219 series. Every appearance is data point of scatter-plot with opacity 0.7.
+                </p> 
             </div>
-            <div class="image-wrapper-div">
-                <img class="heroes_img" src="static/hereos_who_appear_in_more_than_20_series.png" alt="hereos_who_appear_in_more_than_20_series">
-            </div>            
+
+            <div class="timeline-div">
+                <!-- <p id="wordcloud_p">THIRD one.  -->
+                <p class="white-par">4. Scatterplot of Heroes who appear in MORE THAN 20 series. 
+                    <br>
+                    <br>
+                    Ordered by most frequent Heroes.
+                </p> 
+                <div class="image-wrapper-div">
+                    <img class="heroes_img" src="static/hereos_who_appear_in_more_than_20_series.png" alt="hereos_who_appear_in_more_than_20_series">
+                </div>    
+
+            </div>
+                    
             
-            <!-- <div class="image-wrapper-div">
-                <img id="heroes_img" src="static/three_heroes_on_timeline.png" alt="heroes_on_timeline">
-            </div> -->
 
+            <div class="timeline-div">
+                <!-- <p id="wordcloud_p">THIRD one.  -->
 
-            <div class="image-wrapper-div">
-                <img class="heroes_img" src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
+                <div class="image-wrapper-div">
+                    <img class="heroes_img" src="static/four_heroes_appearance_in_total_and_in_unique_series.png" alt="horizontal_barplot">
+                </div> 
+                <p class="white-par">5. Horizontal barplot of Heroes TOTAL mentions and UNIQUE SERIES present. 
+                    <br>
+                    <br>
+                    Ordered by most frequent Heroes, in total 11 Heroes recounted.
+                </p> 
+
             </div>
+
+
 
         </div>
 

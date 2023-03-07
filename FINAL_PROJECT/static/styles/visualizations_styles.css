@@ -28,75 +28,63 @@ h1 {
 }
 
 img {
-  width: 500px;
+  width: 450px;
   height: auto;
 }
-/* .image-container img {
-  display: block;
-  margin: 0 auto;
-  width: 50%;
-  height: auto;
-} */
-/* #search_query_button {
-  background-color: #c0392b;
-  color: white;
-  cursor: pointer;
-  width: 400px;
-}
-#see_plots_button { */
-  /* background-color: rgb(68, 130, 239);
+
+#see_plots_button { 
+  
+  /* /* background-color: rgb(68, 130, 239); */
   color: white;
   cursor: pointer;
   width: 200px;
   height: 38px;
 }
+
 #buttons_div {
   display: flex;
   justify-content: space-between;
-} */
+} 
 
-/* .button {
-  display: block;
-  width: 115px;
-  height: 50px;
-  background: #4E9CAF;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  color: white;
-  font-weight: bold;
-  line-height: 25px;
-} */
 
+
+.heroes_img {
+  width: 900px;
+  height: auto;
+}
 
 .image-wrapper-div {
-  padding: 15px;
-  margin: 40px;
+  padding: 5px;
+  margin: 15px;
 }
 
 .wordclouds-div {
   /* padding: 15px; */
   margin: 40px;
   /* border-left: 50px; */
-  margin-left: 200px;
-  width: 1100px;
+  /* margin-left: 200px; */
+  width: 1200px;
   height: auto;
   display: flex;
   justify-content: space-around;
 }
 
-.heroes_img {
-  width: 1000px;
-  height: auto;
-}
-
-#wordcloud_p {
-  margin-top: 60px;
+.white-par {
+    /* margin-top: 60px; */
+  padding: 5px;
+  margin: 15px;
   background-color: whitesmoke;
-  width: 130px;
+  width: 200px;
   height: 270px;
 }
 
-/* flex-grow: 0;
-flex-shrink: 0;
-flex-basis: 40px; */
+.timeline-div {
+  /* padding: 15px; */
+  margin: 40px;
+  /* border-left: 50px; */
+  /* margin-left: 200px; */
+  width: 1200px;
+  height: auto;
+  display: flex;
+  justify-content: space-around;
+}
