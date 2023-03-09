@@ -120,7 +120,7 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_
-    hits=[]
+    hits = []
 
     try:
         # this IF block added for Stemmer functionality
@@ -136,21 +136,23 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
             hits_list = list(hits_matrix.nonzero()[1])
             # print("hits_list from ELSE: ", hits_list)
 
-    
-        #print("Additional tokens from Stemmer: ", additional_tokens)
+
+        # Additional tokens from Stemmer:
         for i, doc_idx in enumerate(hits_list):
             
             doc_lines = linesplitter_and_cleaner(documents[doc_idx])
             episode_number = doc_idx
-            first_line = '\n'.join(doc_lines[:5])
 
             timestamp_and_lines_list = []
-            
+
+            pattern = re.compile(r'\b%s' % input_query, re.I)   
+
             # Separate timestamp and line
-            for i_line in range(1, len(doc_lines)):
-                if input_query in doc_lines[i_line].lower():
-                    timestamp = doc_lines[i_line][:31]
-                    line = doc_lines[i_line][31:]
+            for i, doc in enumerate(doc_lines):
+                if pattern.search(doc):
+                    timestamp = doc[:31]
+                    line = doc[31:]
+
 
                     timestamp_and_lines_tuple = (timestamp, line)
 
@@ -187,6 +189,7 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
     # Vectorize query string
         query_vec = gv.transform([ input_query ]).tocsc()
 
+        
     # Cosine similarity
         hits = np.dot(query_vec, g_matrix)
 
@@ -195,8 +198,7 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
             sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]),
                 reverse=True)
 
-        hits=[]
-
+        hits = []
                     
         for i_doc, doc_idx in enumerate(ranked_scores_and_doc_ids):
 
@@ -208,6 +210,7 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
             
             episode_number = doc_idx
 
+            
             # Separate timestamp and line
             for i_line in range(1, len(doc_lines)):
                 if input_query in doc_lines[i_line].lower():
