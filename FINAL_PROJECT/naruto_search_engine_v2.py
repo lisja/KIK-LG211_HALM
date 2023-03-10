@@ -24,24 +24,17 @@ def linesplitter_and_cleaner(document):
 
     # Splits documents (episodes) into a list of speech lines including the timestamp
     doc_lines = re.split(r'^\d+$', document, 0, re.MULTILINE)
-    #doc_lines = document.splitlines()
     
     for line in doc_lines:
         if len(line) < 1:
             doc_lines.remove(line)
     
-    """
-    doc_lines_no_timestamps = doc_lines
-    
-    for line in doc_lines_no_timestamps:
-        line = re.sub('00:.*0',  '', line)
-    """
     return doc_lines
 
-# 1c default file_path used
+# The default file_path used
 file_path = "naruto3.txt"
 
-# 1d executing readandcut() function and saving full 
+# Executing readandcut() function and saving full 
 # string into "text" and split articles into "documents"
 text, documents = readandcut(file_path)
 
@@ -90,17 +83,7 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
 
                 timestamp_and_lines_list.append(timestamp_and_lines_tuple)
                 
-            """
-            for i_line in range(1, len(doc_lines)):
-                
-                if input_query in doc_lines[i_line].lower():
-                    timestamp = doc_lines[i_line][:31]
-                    line = doc_lines[i_line][31:]
-                    timestamp_and_lines_tuple = (timestamp, line)
-                    timestamp_and_lines_list.append(timestamp_and_lines_tuple)
-            """
             for timestamp_and_line in timestamp_and_lines_list:
-                #episode_line = timestamp_and_line[0] + ":" + timestamp_and_line[1] + "\n"
                 hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
             
         return hits, len(hits)
@@ -130,11 +113,9 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
                 hits_matrix = eval(rewrite_query(token))
                 hits_list.append(list(hits_matrix.nonzero()[1]))
             hits_list = list(set([item for items in hits_list for item in items]))
-            # print("hits_list from IF: ", hits_list)
         else:
             hits_matrix = eval(rewrite_query(input_query))
             hits_list = list(hits_matrix.nonzero()[1])
-            # print("hits_list from ELSE: ", hits_list)
 
 
         # Additional tokens from Stemmer:
@@ -172,17 +153,17 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
         return hits, amount
     
 
-def search_tfv(input_query, bool_or_tfv_or_stems):
+def search_tfv(input_query, bool_or_tfv_or_stems): # tf-idf search
     #if input is in quotes, use bigrams only (c. Multi-word phrases)
     try:
         if input_query.startswith('"') and input_query.endswith('"'):
             input_query = input_query[1:-1] # remove the quotes
             try:
-                gv = TfidfVectorizer(lowercase=True, ngram_range=(2, 2), sublinear_tf=True, use_idf=True, norm="l2")
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(2, 2), sublinear_tf=True, use_idf=True, norm="l2", token_pattern=r'[A-Za-z_À-ÿ\-]+\b')
             except IndexError:
-                gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
+                gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2", token_pattern=r'[A-Za-z_À-ÿ\-]+\b')
         else:
-            gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2")
+            gv = TfidfVectorizer(lowercase=True, ngram_range=(1, 2), sublinear_tf=True, use_idf=True, norm="l2", token_pattern=r'[A-Za-z_À-ÿ\-]+\b')
     
         g_matrix = gv.fit_transform(documents).T.tocsr()
 
@@ -210,15 +191,16 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
             
             episode_number = doc_idx
 
+            pattern = re.compile(r'\b%s\b' % input_query, re.I)
+
             
             # Separate timestamp and line
-            for i_line in range(1, len(doc_lines)):
-                if input_query in doc_lines[i_line].lower():
-                    timestamp = doc_lines[i_line][:31]
-                    line = doc_lines[i_line][31:]
-
-                    # Count number of hits on a speech line
-                    count += len(re.findall(input_query, line.lower()))
+            for i,doc in enumerate(doc_lines):
+                if pattern.search(doc):
+                    timestamp = doc[:31]
+                    line = doc[31:]
+                    count += 1
+                    
 
             # "Best match" for the best one, and then for example "2. best match" for the rest     
             if i_doc == 0:
@@ -229,9 +211,11 @@ def search_tfv(input_query, bool_or_tfv_or_stems):
             # Make the count into a string plus the "number of hits" string before it
             count_str = "Number of hits: " + str(count)
             
+            
             hits.append({"article_name":episode_number, "article_score":best_match, "article_content":count_str})
       
         return hits, len(hits)
+
 
     except:
         hits=[]
@@ -258,7 +242,6 @@ def rewrite_query(query): # rewrite every token in the query
 def stemming(file_path): 
 
     stemmer = PorterStemmer()
-    # words = word_tokenize(text[:3000])
     words = word_tokenize(text)
 
     # loop over all tokens and save one_to_one 'token':'stem' pair in a dict
@@ -275,17 +258,15 @@ def stemming(file_path):
         else:
             stem_to_tokens_dict[value].append(key)
 
-    # print("stem_to_tokens_dict: ", stem_to_tokens_dict)
     return token_to_stem_dict, stem_to_tokens_dict
 
 token_to_stem_dict, stem_to_tokens_dict = stemming(file_path)
 
-# 3e find_related_tokens_from_stem – and return a list of words for search
+# find_related_tokens_from_stem – and return a list of words for search
 def find_related_tokens_from_stem(token):
     try:
         stem = token_to_stem_dict[token]
         list_of_words_to_look_for = stem_to_tokens_dict[stem]
-    # print(list_of_words_to_look_for)
         return list_of_words_to_look_for
     except KeyError: # error handling if query not in text
         return [token]
