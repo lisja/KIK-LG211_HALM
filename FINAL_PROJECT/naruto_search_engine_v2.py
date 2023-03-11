@@ -46,43 +46,85 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_
     rewritten_query = rewrite_query(input_query)
-    
+        
     try:
 
         hits_matrix = eval(rewritten_query)
         hits_list = list(hits_matrix.nonzero()[1])
-        print(hits_list)
         hits=[]
+        input_query_tokens = word_tokenize(input_query)
+        input_query_tokens_removed = []
+        or_set = {}
+        
+        for token in input_query_tokens:
+            if token not in ["AND", "OR", "NOT"]:
+                input_query_tokens_removed.append(token)
+
+
         for i, doc_idx in enumerate(hits_list):
 
+            #clean up the lines in the episode
             doc_lines = linesplitter_and_cleaner(documents[doc_idx])
+            
             timestamp_and_lines_list = []
             episode_number = doc_idx
-            doc_lines_sparse_matrix = cv.fit_transform(doc_lines)
-            doc_lines_dense_matrix = doc_lines_sparse_matrix.todense()
-            td_matrix = doc_lines_dense_matrix.T
-            t2i = cv.vocabulary_
-  
-            try:
-                doc_lines_hits_matrix = eval(rewritten_query)
-            except Exception as e:
-                print(e)
-                continue
-            doc_lines_hits_list = list(doc_lines_hits_matrix.nonzero()[1])
-            print("doc lines: ", doc_lines_hits_list)
+            doc_lines_hits_list = []
 
+            #make list of lists that will have indexes of lines which are found in the line
+            list_of_index_lists = [[] for index_list in range(len(input_query_tokens_removed))]
 
-            timestamp_and_lines_list = []
+            for i_token, token in enumerate(input_query_tokens_removed):
+                for i_line, line in enumerate(doc_lines):
+                    line = line.lower()
+                    line = word_tokenize(line)
+                    if token in line:
+                        list_of_index_lists[i_token].append(i_line)
+            
+            if "OR NOT" in input_query:
+                not_tokens= []
 
-            for i_line in doc_lines_hits_list:
-                
-                timestamp = doc_lines[i_line][:31]
-                line = doc_lines[i_line][31:]
+                #add token to the not_tokens list when it succeeds NOT
+                for i_token, token in enumerate(input_query_tokens):
+                    if token == "NOT":
+                        not_tokens.append(input_query_tokens[i_token+1])
+                #if a token in not_tokens is on the line, exclude it from the output
+                for i, i_list in enumerate(list_of_index_lists):
+                    for token_index in i_list:
+                        print(i_list)
+                        for not_token in not_tokens:
+                            line = doc_lines[token_index].lower()
+                            line = word_tokenize(line)
+                            if not_token in line:
+                                continue
+                            else:
+                                doc_lines_hits_list.append(token_index)
+            #turn lists of indexes with the tokens into a set to dispose of duplicates, then turn back to an ordered list
+            elif "AND" in input_query_tokens:
+                print("HERE!!!!!!!!!!!!!!!!!!!")
+                same_values = set(list_of_index_lists[0]).intersection(*list_of_index_lists[1:])
+                same_values = sorted(list(same_values))
+                #print(same_values)
+                for token_index in same_values:
+                    doc_lines_hits_list.append(token_index)
+            #if a token is in either list for indexes, then add that index to the output (after turning to set, to get rid of duplicates)   
+            elif "OR" in input_query_tokens:
+                for i, i_list in enumerate(list_of_index_lists):
+                    for token_index in i_list:
+                        doc_lines_hits_list.append(token_index)
+                        doc_lines_hits_list = sorted(list(set(doc_lines_hits_list)))
+            #add lines to output: this should only happen with one search term
+            else:
+                for i, i_list in enumerate(list_of_index_lists):
+                    for token_index in i_list:
+                        doc_lines_hits_list.append(token_index)   
 
+            #separates timestamps and lines, adds them to a tuple, then to a list
+            for index in doc_lines_hits_list:
+                timestamp = doc_lines[index][:31]
+                line = doc_lines[index][31:]
                 timestamp_and_lines_tuple = (timestamp, line)
+                timestamp_and_lines_list.append(timestamp_and_lines_tuple)               
 
-                timestamp_and_lines_list.append(timestamp_and_lines_tuple)
-                
             for timestamp_and_line in timestamp_and_lines_list:
                 hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
             
@@ -95,7 +137,7 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
         article_content = "Query not found in the documents."
         hits.append({"article_name":article_name, "article_content":article_content})
         return hits, amount
-    
+     
 def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search the stems
 
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'[A-Za-z_À-ÿ\-]+\b')
