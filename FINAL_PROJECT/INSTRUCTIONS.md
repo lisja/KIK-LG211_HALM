@@ -20,5 +20,18 @@ TF-IDF search has the added functionality that it can look for bigrams. To searc
 that Can search for bigrams when using " "
 
 
-- Stems
- What are stems
+### Stems search
+Stems search mode allows to find different forms of the search word. To process data for Stem search we use PorterStemmer() from nltk library.
+ 
+## Visualizations
+ 
+There are 3 kinds of visualizations (plots) made for the Naruto dataset. As these plots deal with appearances of heroes on timeline and other static data – visualizations are plotted in a separate plots.html file, so that they do not clutter the main Search view.
+
+### Wordclouds
+The are 2 Wordcloud visualizations – (1) of all HEROES in Naruto series,  (2) of all OTHER words in series – MINUS heroes names and stopwords.    
+
+### Scatterplots
+There are 2 Scatterplots – (1) of all 89 heroes on timeline, in order of appearance in 219 series, (2) Scatterplot of Heroes who appear in MORE THAN 20 series, ordered by most frequent Heroes.
+     
+### Horizontal barplot
+A Horizontal barplot of Heroes TOTAL mentions and UNIQUE SERIES where this hero is present.
