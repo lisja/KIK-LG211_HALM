@@ -4,9 +4,11 @@ Hello and welcome to **HALM Naruto Search**!
 
 Halm Naruto search works on the Dataset of English subtitles to 200+ episodes of the Japanese anime series Naruto https://en.wikipedia.org/wiki/Naruto.
 
-To get the **Naruto Search Engine** to work you need to download the **FINAL_PROJECT** folder with all of its contents (except the Tests folder is not necessary), and 
+To get the **Naruto Search Engine** to work you need to download the **FINAL_PROJECT** folder with all of its contents (except the Tests folder is not necessary), and run it via Flask python framework.
 
-There are 3 different search possibilites: Boolean, TF-IDF and Stems.
+There are 3 different search modes – **Boolean**, **TF-IDF** and **Stems**. Before inputting the keyword you want to find you have to choose one of the 3 search modes!
+
+
 
 - Boolean Search
 AND/NOT/OR NOT explained
