@@ -12,10 +12,13 @@ There are 3 different search modes – **Boolean**, **TF-IDF** and **Stems**. Be
 
 ### Boolean Search
 Boolean search allows to look for a single term (e.g. "cat"), or also for a combinations of terms joined by Boolean operators **AND**, **NOT**, **OR** (e.g. "cat OR dog"). Boolean operators in the input-field should be CAPITALISED so that search engine understands them as logical operators and not as the words to look for.
+Boolean search outputs relevant documents in the order of their appearance in the dataset.
 
-- TF-IDF
- Can search for bigrams when using " "
- What is the result the search shows (i. e. what is TfidfVectorizer, what is a best match etc.)
+### TF-IDF Search
+TF-IDF search evaluates documents by significance related to the search term and sorts the output starting with the most significant documents. The most significant (= best match) results are calculated using TfidfVectorizer from sklearn library.
+TF-IDF search has the added functionality that it can look for bigrams. To search for bigrams, user has to wrap the string in double quotes, e.g. "good cats" will look for exactly this bigram, but not for separate "good" or "cats" in the dataset.
+that Can search for bigrams when using " "
+
 
 - Stems
  What are stems
