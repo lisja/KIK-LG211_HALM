@@ -6,6 +6,8 @@ Halm Naruto search works on the Dataset of English subtitles to 200+ episodes of
 
 To get the **Naruto Search Engine** to work you need to download the **FINAL_PROJECT** folder with all of its contents (except the Tests folder is not necessary), and run it via Flask python framework.
 
+## Search modes
+
 There are 3 different search modes – **Boolean**, **TF-IDF** and **Stems**. Before inputting the keyword you want to find you have to choose one of the 3 search modes!
 
 
