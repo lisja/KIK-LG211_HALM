@@ -10,10 +10,7 @@ To get the **Naruto Search Engine** to work you need to download the **FINAL_PRO
 
 There are 3 different search modes – **Boolean**, **TF-IDF** and **Stems**. Before inputting the keyword you want to find you have to choose one of the 3 search modes!
 
-
-
-- Boolean Search
-AND/NOT/OR NOT explained
+**Boolean Search** – allows to look for a single term (e.g. "cat"), or also for a combinations of terms joined by Boolean operators **AND**, **NOT**, **OR** (e.g. "cat OR dog"). Boolean operators in the input-field should be CAPITALISED so that search engine understands them as logical operators and not as the words to look for.
 
 - TF-IDF
  Can search for bigrams when using " "
