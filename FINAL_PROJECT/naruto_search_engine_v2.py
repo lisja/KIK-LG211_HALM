@@ -79,23 +79,8 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
                     line = word_tokenize(line)
                     if token in line:
                         list_of_index_lists[i_token].append(i_line)
-            
-            #turn lists of indexes with the tokens into a set to dispose of duplicates, then turn back to an ordered list
-            if "AND" in input_query_tokens:
-                # print("HERE!!!!!!!!!!!!!!!!!!!")
-                same_values = set(list_of_index_lists[0]).intersection(*list_of_index_lists[1:])
-                same_values = sorted(list(same_values))
-                #print(same_values)
-                for token_index in same_values:
-                    doc_lines_hits_list.append(token_index)
-            #if a token is in either list for indexes, then add that index to the output (after turning to set, to get rid of duplicates)   
-            elif "OR" in input_query_tokens:
-                for i, i_list in enumerate(list_of_index_lists):
-                    for token_index in i_list:
-                        doc_lines_hits_list.append(token_index)
-                        doc_lines_hits_list = sorted(list(set(doc_lines_hits_list)))
 
-            elif "OR NOT" in input_query:
+            if "OR NOT" in input_query:
                 not_tokens= []
 
                 #add token to the not_tokens list when it succeeds NOT
@@ -113,6 +98,23 @@ def search_bool(input_query, bool_or_tfv): # search the boolean query
                                 continue
                             else:
                                 doc_lines_hits_list.append(token_index)
+            
+            #turn lists of indexes with the tokens into a set to dispose of duplicates, then turn back to an ordered list
+            elif "AND" in input_query_tokens:
+                # print("HERE!!!!!!!!!!!!!!!!!!!")
+                same_values = set(list_of_index_lists[0]).intersection(*list_of_index_lists[1:])
+                same_values = sorted(list(same_values))
+                #print(same_values)
+                for token_index in same_values:
+                    doc_lines_hits_list.append(token_index)
+            #if a token is in either list for indexes, then add that index to the output (after turning to set, to get rid of duplicates)   
+            elif "OR" in input_query_tokens:
+                for i, i_list in enumerate(list_of_index_lists):
+                    for token_index in i_list:
+                        doc_lines_hits_list.append(token_index)
+                        doc_lines_hits_list = sorted(list(set(doc_lines_hits_list)))
+
+
             #add lines to output: this should only happen with one search term
             else:
                 for i, i_list in enumerate(list_of_index_lists):
