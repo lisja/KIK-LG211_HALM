@@ -36,6 +36,6 @@ Starting to work with the final project
 
 Finishing the final project
 
-**The final project**
+**The final project:**
 
 You can find our final project of the course from its' own folder named FINAL_PROJECT with the instructions how to use the program

@@ -5,7 +5,7 @@ import numpy as np
 import re
 from nltk.stem import *
 from nltk.tokenize import sent_tokenize, word_tokenize
-import operator
+from operator import *
 import time
 
 app = Flask(__name__)
@@ -185,7 +185,9 @@ def search_stems(input_query, bool_or_tfv_or_stems, additional_tokens): # search
             for timestamp_and_line in timestamp_and_lines_list:
                 hits.append({"article_name":episode_number, "article_score":timestamp_and_line[0], "article_content":timestamp_and_line[1]})
 
-        return hits, len(hits)
+        sorted_hits = sorted(hits, key=itemgetter('article_name')) 
+
+        return sorted_hits, len(hits)
 
     except:
         hits=[]
